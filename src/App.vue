@@ -1,6 +1,20 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
+// 1. PALET WARNA BACKGROUND CANVAS
+const canvasBgColors = [
+    { name: 'Dark Slate', value: '#0f172a' },
+    { name: 'Deep Black', value: '#09090b' },
+    { name: 'Studio Gray', value: '#334155' },
+    { name: 'Minimal White', value: '#f8fafc' },
+    { name: 'Warm Sand', value: '#fef3c7' },
+    { name: 'Cyber Mint', value: '#064e3b' },
+    { name: 'Crimson Red', value: '#450a0a' }
+];
+
+const selectedBg = ref('#0f172a');
+
+// 2. INVENTORI ITEM 2D (Lengkap dengan Nickname & Vector Detail)
 const inventory = {
     baju: [
         { 
@@ -23,6 +37,78 @@ const inventory = {
                 <circle cx="50" cy="84" r="1.2" fill="#1e40af"/>
                 <path fill="none" stroke="#60a5fa" stroke-width="1" d="M35 44 L43 44 L43 55 L35 55 Z"/>
             ` 
+        },
+        {
+            id: 'b4', name: 'OP Blue Polo Orange Stripe',
+            paths: `
+                <path fill="#0284c7" stroke="#0369a1" stroke-width="1.5" d="M25 18 L40 18 Q50 28 60 18 L75 18 L90 52 L78 62 L70 45 L70 96 L30 96 L30 45 L22 62 L10 52 Z" />
+                <path fill="#0284c7" stroke="#0284c7" stroke-width="1" d="M30 18 L42 24 L50 20 L58 24 L70 18 L58 30 L42 30 Z" />
+                <line x1="50" y1="20" x2="50" y2="40" stroke="#0369a1" stroke-width="2"/>
+                <circle cx="50" cy="26" r="1" fill="#f8fafc"/>
+                <circle cx="50" cy="34" r="1" fill="#f8fafc"/>
+                <!-- Vertical Orange Stripe di Kiri -->
+                <rect x="34" y="18" width="4" height="78" fill="#f97316"/>
+            `
+        },
+        {
+            id: 'b5', name: 'OP Black Polo H-Stripes',
+            paths: `
+                <path fill="#0f172a" stroke="#1e293b" stroke-width="1.5" d="M25 18 L40 18 Q50 28 60 18 L75 18 L90 52 L78 62 L70 45 L70 96 L30 96 L30 45 L22 62 L10 52 Z" />
+                <path fill="#1e293b" stroke="#0f172a" stroke-width="1" d="M30 18 L42 24 L50 20 L58 24 L70 18 L58 30 L42 30 Z" />
+                <line x1="50" y1="20" x2="50" y2="38" stroke="#334155" stroke-width="2"/>
+                <!-- Horizontal Blue & White Stripes di Perut -->
+                <rect x="30" y="58" width="40" height="4" fill="#38bdf8"/>
+                <rect x="30" y="64" width="40" height="3" fill="#ffffff"/>
+            `
+        },
+        {
+            id: 'b6', name: 'Giordano Baby Blue Polo',
+            paths: `
+                <path fill="#bae6fd" stroke="#7dd3fc" stroke-width="1.5" d="M25 18 L40 18 Q50 28 60 18 L75 18 L90 52 L78 62 L70 45 L70 96 L30 96 L30 45 L22 62 L10 52 Z" />
+                <path fill="#7dd3fc" stroke="#0284c7" stroke-width="1" d="M30 18 L42 24 L50 20 L58 24 L70 18 L58 30 L42 30 Z" />
+                <line x1="50" y1="20" x2="50" y2="38" stroke="#0284c7" stroke-width="2"/>
+                <circle cx="50" cy="26" r="1" fill="#1e3a8a"/>
+                <circle cx="50" cy="32" r="1" fill="#1e3a8a"/>
+                <!-- Logo Singa Giordano di Dada Kanan -->
+                <path fill="#1e3a8a" d="M60 36 Q 64 32 66 36 L 68 38 L 65 40 Q 62 38 60 36 Z" />
+                <circle cx="63" cy="35" r="1.5" fill="#f59e0b" />
+            `
+        },
+        {
+            id: 'b7', name: 'Kemeja Executive Abu Tua',
+            paths: `
+                <path fill="#334155" stroke="#1e293b" stroke-width="1.5" d="M25 18 L40 20 Q50 32 60 20 L75 18 L90 52 L78 62 L70 45 L70 96 L30 96 L30 45 L22 62 L10 52 Z" />
+                <path fill="#1e293b" stroke="#0f172a" stroke-width="1.5" d="M30 18 L44 26 L50 20 L56 26 L70 18 L58 32 L42 32 Z" />
+                <line x1="50" y1="32" x2="50" y2="96" stroke="#1e293b" stroke-width="2"/>
+                <circle cx="50" cy="42" r="1.2" fill="#0f172a"/>
+                <circle cx="50" cy="56" r="1.2" fill="#0f172a"/>
+                <circle cx="50" cy="70" r="1.2" fill="#0f172a"/>
+                <circle cx="50" cy="84" r="1.2" fill="#0f172a"/>
+                <path fill="none" stroke="#1e293b" stroke-width="1" d="M35 44 L43 44 L43 55 L35 55 Z"/>
+            `
+        },
+        {
+            id: 'b8', name: 'Kemeja Executive Putih',
+            paths: `
+                <path fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" d="M25 18 L40 20 Q50 32 60 20 L75 18 L90 52 L78 62 L70 45 L70 96 L30 96 L30 45 L22 62 L10 52 Z" />
+                <path fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" d="M30 18 L44 26 L50 20 L56 26 L70 18 L58 32 L42 32 Z" />
+                <line x1="50" y1="32" x2="50" y2="96" stroke="#e2e8f0" stroke-width="2"/>
+                <circle cx="50" cy="42" r="1.2" fill="#64748b"/>
+                <circle cx="50" cy="56" r="1.2" fill="#64748b"/>
+                <circle cx="50" cy="70" r="1.2" fill="#64748b"/>
+                <circle cx="50" cy="84" r="1.2" fill="#64748b"/>
+                <path fill="none" stroke="#cbd5e1" stroke-width="1" d="M35 44 L43 44 L43 55 L35 55 Z"/>
+            `
+        },
+        {
+            id: 'b9', name: 'Navy Polo TWN',
+            paths: `
+                <path fill="#1e3a8a" stroke="#172554" stroke-width="1.5" d="M25 18 L40 18 Q50 28 60 18 L75 18 L90 52 L78 62 L70 45 L70 96 L30 96 L30 45 L22 62 L10 52 Z" />
+                <path fill="#172554" stroke="#1e3a8a" stroke-width="1" d="M30 18 L42 24 L50 20 L58 24 L70 18 L58 30 L42 30 Z" />
+                <line x1="50" y1="20" x2="50" y2="38" stroke="#1d4ed8" stroke-width="2"/>
+                <!-- Teks TWN Putih di Dada Kanan -->
+                <text x="63" y="38" fill="white" font-size="5" font-weight="900" font-family="Arial, sans-serif">TWN</text>
+            `
         }
     ],
     jacket: [
@@ -70,6 +156,109 @@ const inventory = {
                 <circle cx="57" cy="43" r="1.5" fill="#3f3f46"/>
                 <path fill="none" stroke="#27272a" stroke-width="1.5" d="M30 72 L42 72 L44 92 L30 92 Z M70 72 L58 72 L56 92 L70 92 Z"/>
             ` 
+        },
+        {
+            id: 'j6', name: 'Executive Collar Black Zip',
+            silhouette: `M32 18 L25 15 L8 52 L16 67 L26 45 L26 96 L74 96 L74 45 L84 67 L92 52 L75 15 L68 18 Q50 24 32 18 Z`,
+            paths: `
+                <!-- Kerah Kerja Formal Terbuka -->
+                <path fill="#27272a" stroke="#09090b" stroke-width="1" d="M32 18 L42 24 L50 20 L58 24 L68 18 L58 28 L42 28 Z" />
+                <path fill="#18181b" stroke="#09090b" stroke-width="1.5" d="M32 18 L25 15 L8 52 L16 67 L26 45 L26 96 L46 96 L46 65 Z" />
+                <path fill="#18181b" stroke="#09090b" stroke-width="1.5" d="M68 18 L75 15 L92 52 L84 67 L74 45 L74 96 L54 96 L54 65 Z" />
+                <!-- Zipper Line & Puller -->
+                <path fill="#18181b" d="M46 65 L54 65 L54 96 L46 96 Z" />
+                <line x1="50" y1="65" x2="50" y2="96" stroke="#3f3f46" stroke-width="2"/>
+                <rect x="49" y="65" width="2" height="5" fill="#d4d4d8" rx="0.5"/>
+            `
+        },
+        {
+            id: 'j7', name: 'CK Grey Hoodie',
+            silhouette: `M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z`,
+            paths: `
+                <path fill="#6b7280" stroke="#4b5563" stroke-width="2" d="M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z" />
+                <path d="M45 25 L45 45 M55 25 L55 45" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"/>
+                <!-- Logo CK Hitam & Calvin Klein Putih -->
+                <text x="50" y="55" fill="#111827" font-size="22" font-weight="900" font-family="Arial, sans-serif" text-anchor="middle">CK</text>
+                <text x="50" y="52" fill="#ffffff" font-size="5" font-weight="700" font-family="Arial, sans-serif" text-anchor="middle" letter-spacing="1">CALVIN KLEIN</text>
+                <path fill="#4b5563" d="M35 72 L65 72 L70 92 L30 92 Z" />
+            `
+        },
+        {
+            id: 'j8', name: 'Adidas Oasis Indigo Blue',
+            silhouette: `M38 15 L25 15 L8 52 L16 67 L26 45 L26 96 L74 96 L74 45 L84 67 L92 52 L75 15 L62 15 Q50 22 38 15 Z`,
+            paths: `
+                <path fill="#312e81" stroke="#1e1b4b" stroke-width="1" d="M38 15 L25 15 L8 52 L16 67 L26 45 L26 96 L47 96 L47 68 Z" />
+                <path fill="#312e81" stroke="#1e1b4b" stroke-width="1" d="M62 15 L75 15 L92 52 L84 67 L74 45 L74 96 L53 96 L53 68 Z" />
+                <path fill="#312e81" d="M47 68 L53 68 L53 96 L47 96 Z" />
+                <line x1="50" y1="68" x2="50" y2="96" stroke="#4338ca" stroke-width="2"/>
+                <!-- White Stripes di Lengan -->
+                <path d="M23 16 L7 50 M26 17 L10 51 M29 18 L13 52" stroke="white" stroke-width="1.5" />
+                <path d="M77 16 L93 50 M74 17 L90 51 M71 18 L87 52" stroke="white" stroke-width="1.5" />
+                <!-- Tulisan oasis & Logo Adidas Putih -->
+                <text x="35" y="45" fill="white" font-size="6" font-weight="900" font-family="Arial, sans-serif">oasis</text>
+                <path fill="white" d="M65 42 L68 37 L70 42 Z M68 42 L71 35 L73 42 Z M71 42 L74 33 L76 42 Z" />
+            `
+        },
+        {
+            id: 'j9', name: 'Wrangler Black Bomber',
+            silhouette: `M35 18 Q50 26 65 18 L75 15 L95 55 L85 70 L72 45 L72 96 L28 96 L28 45 L15 70 L5 55 L25 15 Z`,
+            paths: `
+                <path fill="#18181b" stroke="#09090b" stroke-width="2" d="M35 18 Q50 26 65 18 L75 15 L95 55 L85 70 L72 45 L72 96 L28 96 L28 45 L15 70 L5 55 L25 15 Z" />
+                <!-- Ribbed Collar & Hem -->
+                <path fill="#27272a" d="M35 18 Q50 26 65 18 Q50 22 35 18 Z M28 92 L72 92 L72 96 L28 96 Z" />
+                <line x1="50" y1="22" x2="50" y2="92" stroke="#27272a" stroke-width="2"/>
+                <!-- Logo Wrangler Putih Kecil di Dada Kanan -->
+                <text x="62" y="40" fill="white" font-size="4.5" font-weight="700" font-family="Georgia, serif">Wrangler</text>
+            `
+        },
+        {
+            id: 'j10', name: 'Boxy Black Zip Jacket',
+            silhouette: `M32 16 Q50 22 68 16 L80 15 L98 56 L86 70 L76 45 L76 96 L24 96 L24 45 L14 70 L2 56 L20 15 Z`,
+            paths: `
+                <!-- Potongan Boxy Lebar -->
+                <path fill="#09090b" stroke="#27272a" stroke-width="2" d="M32 16 Q50 22 68 16 L80 15 L98 56 L86 70 L76 45 L76 96 L24 96 L24 45 L14 70 L2 56 L20 15 Z" />
+                <line x1="50" y1="19" x2="50" y2="96" stroke="#3f3f46" stroke-width="2.5"/>
+                <!-- Large Flap Cargo Pockets Kiri Kanan -->
+                <rect x="28" y="60" width="16" height="20" fill="#18181b" stroke="#27272a" rx="1"/>
+                <rect x="56" y="60" width="16" height="20" fill="#18181b" stroke="#27272a" rx="1"/>
+            `
+        },
+        {
+            id: 'j11', name: 'H&M Godfather White Hoodie',
+            silhouette: `M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z`,
+            paths: `
+                <path fill="#f8fafc" stroke="#e2e8f0" stroke-width="2" d="M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z" />
+                <path d="M45 25 L45 45 M55 25 L55 45" stroke="#64748b" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- Logo The Godfather Hitam -->
+                <text x="50" y="48" fill="#0f172a" font-size="6" font-weight="900" font-family="Times New Roman, serif" text-anchor="middle">The Godfather</text>
+                <!-- Puppet Strings Icon -->
+                <path stroke="#0f172a" stroke-width="1" d="M42 52 L42 58 M46 52 L46 58 M54 52 L54 58 M58 52 L58 58" />
+                <path fill="#e2e8f0" d="M35 72 L65 72 L70 92 L30 92 Z" />
+            `
+        },
+        {
+            id: 'j12', name: 'Jack & Jones Cream Hoodie',
+            silhouette: `M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z`,
+            paths: `
+                <path fill="#fef3c7" stroke="#fde68a" stroke-width="2" d="M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z" />
+                <path d="M45 25 L45 45 M55 25 L55 45" stroke="#d97706" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- Tulisan JACK & JONES Hitam -->
+                <text x="50" y="46" fill="#18181b" font-size="5.5" font-weight="900" font-family="Arial, sans-serif" text-anchor="middle" letter-spacing="0.5">JACK &amp; JONES</text>
+                <path fill="#fde68a" d="M35 72 L65 72 L70 92 L30 92 Z" />
+            `
+        },
+        {
+            id: 'j13', name: 'PSG Black Embroidered Hoodie',
+            silhouette: `M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z`,
+            paths: `
+                <path fill="#09090b" stroke="#27272a" stroke-width="2" d="M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z" />
+                <path d="M45 25 L45 45 M55 25 L55 45" stroke="#3f3f46" stroke-width="2" stroke-linecap="round"/>
+                <!-- Logo PSG Crest Embroidered -->
+                <circle cx="50" cy="46" r="8" fill="#1e3a8a" stroke="#ffffff" stroke-width="1"/>
+                <path fill="#ef4444" d="M48 48 L52 48 L50 40 Z" />
+                <circle cx="50" cy="46" r="2" fill="#ffffff"/>
+                <path fill="#18181b" d="M35 72 L65 72 L70 92 L30 92 Z" />
+            `
         }
     ],
     celana: [
@@ -104,6 +293,33 @@ const inventory = {
                 <line x1="62" y1="15" x2="58" y2="98" stroke="#334155" stroke-width="1"/>
                 <path d="M27 12 L35 25 M73 12 L65 25" stroke="#334155" stroke-width="1.2"/>
             ` 
+        },
+        {
+            id: 'c4', name: 'Slim Fit Black Jeans',
+            paths: `
+                <path fill="#18181b" stroke="#27272a" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L77 15 L77 40 L63 100 L47 100 L50 38 L50 38 L53 100 L37 100 L23 40 L23 15 Z" />
+                <line x1="27" y1="12" x2="73" y2="12" stroke="#3f3f46" stroke-width="1" />
+                <path d="M27 14 L35 25 M73 14 L65 25" stroke="#3f3f46" stroke-width="1"/>
+                <!-- Rivets Denim -->
+                <circle cx="35" cy="25" r="0.8" fill="#d4d4d8"/>
+                <circle cx="65" cy="25" r="0.8" fill="#d4d4d8"/>
+            `
+        },
+        {
+            id: 'c5', name: 'Slim Fit Chino Cream',
+            paths: `
+                <path fill="#fef3c7" stroke="#fde68a" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L77 15 L77 40 L63 100 L47 100 L50 38 L50 38 L53 100 L37 100 L23 40 L23 15 Z" />
+                <line x1="27" y1="12" x2="73" y2="12" stroke="#d97706" stroke-width="1" />
+                <path d="M27 14 L35 25 M73 14 L65 25" stroke="#d97706" stroke-width="1"/>
+            `
+        },
+        {
+            id: 'c6', name: 'H&M Light Grey Slim Jeans',
+            paths: `
+                <path fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L77 15 L77 40 L63 100 L47 100 L50 38 L50 38 L53 100 L37 100 L23 40 L23 15 Z" />
+                <line x1="27" y1="12" x2="73" y2="12" stroke="#64748b" stroke-width="1" />
+                <path d="M27 14 L35 25 M73 14 L65 25" stroke="#64748b" stroke-width="1"/>
+            `
         }
     ],
     sepatu: [
@@ -133,6 +349,129 @@ const inventory = {
                     <ellipse cx="88" cy="44" rx="6" ry="3" />
                 </g>
             ` 
+        },
+        { 
+            id: 's3', name: 'NMD Hu Animal Print Abu', 
+            paths: `
+                <path fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" d="M12 38 C 12 45, 30 50, 50 50 C 75 50, 92 45, 92 38 C 92 36, 80 38, 50 38 C 25 38, 12 36, 12 38 Z" />
+                <rect x="20" y="38" width="14" height="6" fill="#64748b" rx="1"/>
+                <rect x="68" y="39" width="12" height="5" fill="#64748b" rx="1"/>
+                <path fill="#64748b" stroke="#475569" stroke-width="1" d="M15 38 C 15 25, 22 10, 32 10 C 38 10, 42 18, 55 22 C 70 25, 88 28, 92 38 Z" />
+                <path fill="none" stroke="#f8fafc" stroke-width="2" d="M28 10 C 32 8, 38 12, 42 18" />
+                <g fill="#1e293b">
+                    <ellipse cx="38" cy="24" rx="5" ry="3" transform="rotate(-15 38 24)" />
+                    <ellipse cx="50" cy="28" rx="6" ry="3.5" transform="rotate(10 50 28)" />
+                    <ellipse cx="65" cy="31" rx="5.5" ry="3" transform="rotate(-5 65 31)" />
+                    <ellipse cx="78" cy="34" rx="4" ry="2.5" />
+                    <ellipse cx="86" cy="36" rx="2.5" ry="1.8" />
+                </g>
+                <path fill="#94a3b8" opacity="0.5" d="M22 36 L30 22 L45 25 L35 38 Z" />
+                <circle cx="28" cy="26" r="1" fill="#0f172a" />
+                <circle cx="33" cy="28" r="1" fill="#0f172a" />
+                <circle cx="38" cy="30" r="1" fill="#0f172a" />
+                <path d="M28 22 Q 38 26 48 24" stroke="#0f172a" stroke-width="1.5" stroke-dasharray="2,1" fill="none" />
+            `
+        },
+        { 
+            id: 's4', name: 'Yeezy Boost 350 V2 Zyon', 
+            paths: `
+                <path fill="#fef08a" opacity="0.8" stroke="#fde047" stroke-width="1" d="M8 36 C 8 46, 25 50, 50 50 C 78 50, 95 45, 95 36 C 95 32, 80 36, 50 36 C 25 36, 8 32, 8 36 Z" />
+                <g stroke="#eab308" stroke-width="0.8" opacity="0.6">
+                    <line x1="18" y1="36" x2="18" y2="47" />
+                    <line x1="28" y1="36" x2="28" y2="49" />
+                    <line x1="38" y1="36" x2="38" y2="50" />
+                    <line x1="48" y1="36" x2="48" y2="50" />
+                    <line x1="58" y1="36" x2="58" y2="50" />
+                    <line x1="68" y1="36" x2="68" y2="49" />
+                    <line x1="78" y1="36" x2="78" y2="48" />
+                    <line x1="88" y1="36" x2="88" y2="44" />
+                </g>
+                <path fill="#a8a29e" stroke="#78716c" stroke-width="1" d="M12 36 C 12 18, 28 8, 40 12 C 52 16, 75 22, 94 36 Z" />
+                <path fill="#292524" d="M20 30 C 35 25, 60 27, 90 34 C 88 36, 60 30, 20 33 Z" />
+                <path d="M32 16 C 38 12, 45 15, 42 22" fill="none" stroke="#f5f5f4" stroke-width="2" stroke-linecap="round" />
+                <path d="M30 20 L42 22 M33 24 L45 26" stroke="#f5f5f4" stroke-width="1.8" />
+                <path fill="none" stroke="#52525b" stroke-width="1.5" d="M28 11 Q 38 10 44 18" />
+            `
+        },
+        { 
+            id: 's5', name: 'Adidas 4D Alphaedge Putih', 
+            paths: `
+                <path fill="#ffffff" stroke="#e2e8f0" stroke-width="1" d="M10 45 C 10 48, 30 50, 50 50 C 75 50, 95 48, 95 45 Z" />
+                <path fill="#bbf7d0" stroke="#86efac" stroke-width="1" d="M10 36 C 10 45, 30 48, 50 48 C 75 48, 95 45, 95 36 C 95 36, 75 38, 50 38 C 25 38, 10 36, 10 36 Z" />
+                <g stroke="#22c55e" stroke-width="0.8" opacity="0.5" stroke-dasharray="1,1.5">
+                    <path d="M15 37 L90 46 M15 41 L90 38 M20 36 L25 47 M35 36 L40 48 M50 36 L52 48 M65 36 L65 47 M80 36 L78 46" />
+                </g>
+                <path fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" d="M12 36 C 12 16, 25 8, 35 8 C 42 8, 48 18, 65 24 C 80 28, 90 32, 94 36 Z" />
+                <g fill="#94a3b8">
+                    <polygon points="20,24 23,20 25,21 22,25" />
+                    <polygon points="24,25 27,21 29,22 26,26" />
+                    <polygon points="28,26 31,22 33,23 30,27" />
+                </g>
+                <path d="M38 15 L52 24 M41 18 L55 27 M44 21 L58 30" stroke="#cbd5e1" stroke-width="1.5" />
+            `
+        },
+        { 
+            id: 's6', name: 'Adidas 4D Consortium Black', 
+            paths: `
+                <path fill="#a7f3d0" stroke="#4ade80" stroke-width="1" d="M10 36 C 10 46, 30 50, 50 50 C 75 50, 95 46, 95 36 C 95 36, 75 38, 50 38 C 25 38, 10 36, 10 36 Z" />
+                <g stroke="#059669" stroke-width="0.8" opacity="0.6" stroke-dasharray="1,1.5">
+                    <path d="M15 37 L90 47 M15 43 L90 38 M20 36 L25 48 M35 36 L40 49 M50 36 L52 49 M65 36 L65 48 M80 36 L78 47" />
+                </g>
+                <path fill="#1e293b" stroke="#0f172a" stroke-width="1" d="M12 36 C 12 20, 24 10, 36 10 C 44 10, 50 20, 68 25 C 82 28, 92 32, 94 36 Z" />
+                <path fill="#94a3b8" opacity="0.8" d="M25 36 C 25 25, 32 20, 42 22 L 50 36 Z M60 36 C 65 28, 80 30, 90 36 Z" />
+                <g stroke="white" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="42" y1="25" x2="48" y2="35" />
+                    <line x1="48" y1="26" x2="54" y2="36" />
+                    <line x1="54" y1="27" x2="60" y2="36" />
+                </g>
+            `
+        },
+        { 
+            id: 's7', name: 'Adidas 4D 4FWD2 Black', 
+            paths: `
+                <path fill="#09090b" d="M10 46 C 10 49, 30 50, 50 50 C 75 50, 95 49, 95 46 Z" />
+                <path fill="#18181b" stroke="#27272a" stroke-width="1" d="M10 36 C 10 46, 30 48, 50 48 C 75 48, 95 46, 95 36 C 95 36, 75 38, 50 38 C 25 38, 10 36, 10 36 Z" />
+                <g stroke="#3f3f46" stroke-width="1" opacity="0.7">
+                    <path d="M18 37 L14 46 M28 37 L22 47 M38 37 L30 48 M48 37 L40 48 M58 37 L50 48 M68 37 L60 47 M78 37 L72 46 M88 37 L82 45" />
+                </g>
+                <path fill="#09090b" stroke="#27272a" stroke-width="1" d="M12 36 C 10 20, 18 5, 28 5 C 34 8, 42 18, 62 24 C 78 28, 90 32, 94 36 Z" />
+                <g stroke="#3f3f46" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="42" y1="22" x2="48" y2="33" />
+                    <line x1="48" y1="23" x2="54" y2="34" />
+                    <line x1="54" y1="24" x2="60" y2="35" />
+                </g>
+            `
+        },
+        { 
+            id: 's8', name: 'Air Jordan 1 Blue UNC Toe', 
+            paths: `
+                <path fill="#0284c7" d="M8 46 C 8 49, 30 50, 50 50 C 75 50, 95 49, 95 46 Z" />
+                <path fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" d="M8 38 C 8 46, 30 47, 50 47 C 75 47, 95 46, 95 38 Z" />
+                <path fill="#ffffff" stroke="#e2e8f0" stroke-width="1" d="M30 38 L30 22 L55 24 L75 38 Z" />
+                <path fill="#0284c7" stroke="#0369a1" stroke-width="1" d="M68 38 L65 30 L85 33 L94 38 Z" />
+                <path fill="#0f172a" d="M65 38 L62 28 L68 28 L88 34 L94 38 Z" opacity="0.9"/>
+                <path fill="#0f172a" d="M42 22 L52 24 L48 38 L38 38 Z" />
+                <path fill="#0f172a" d="M38 32 C 48 34, 68 30, 78 26 C 68 35, 50 38, 38 38 Z" />
+                <path fill="#0284c7" stroke="#0369a1" stroke-width="1" d="M12 38 L12 16 L28 8 L38 12 L35 38 Z" />
+                <path fill="#0f172a" d="M12 16 L22 10 L28 8 L25 18 Z" />
+                <circle cx="22" cy="16" r="3.5" fill="#0f172a" />
+                <path d="M19 16 L25 16 M20 14.5 L24 17.5" stroke="#0284c7" stroke-width="0.8" />
+                <path d="M32 12 L44 24 M30 16 L42 27 M28 20 L40 30" stroke="#0f172a" stroke-width="1.2" />
+            `
+        },
+        { 
+            id: 's9', name: 'Nike Sacai Low Blazer Black White', 
+            paths: `
+                <path fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" d="M8 36 C 8 48, 28 50, 50 50 C 78 50, 96 48, 96 36 C 96 36, 75 40, 50 40 C 25 40, 8 36, 8 36 Z" />
+                <path fill="none" stroke="#e2e8f0" stroke-width="1" d="M10 40 C 30 43, 60 43, 94 40 M12 44 C 30 46, 60 46, 92 44" />
+                <path fill="#0f172a" stroke="#1e293b" stroke-width="1" d="M12 36 C 12 22, 28 16, 42 16 C 58 20, 82 28, 94 36 Z" />
+                <path fill="#334155" d="M38 30 C 50 33, 70 26, 82 22 C 72 32, 52 36, 38 35 Z" />
+                <path fill="#ffffff" stroke="#cbd5e1" stroke-width="0.8" d="M42 32 C 54 35, 74 27, 86 23 C 76 34, 56 37, 42 36 Z" />
+                <path fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1" d="M32 14 L42 12 L46 22 L36 24 Z" />
+                <path fill="#0f172a" d="M35 15 L43 13 L47 21 L39 23 Z" />
+                <path d="M36 18 L48 28 M38 22 L50 31 M40 26 L52 34" stroke="#ffffff" stroke-width="1.5" />
+                <path d="M37 19 L49 29 M39 23 L51 32" stroke="#0f172a" stroke-width="1" />
+            `
         }
     ]
 };
@@ -142,7 +481,7 @@ const selectedOutfit = ref({
     baju: inventory.baju[2],
     jacket: inventory.jacket[3],
     celana: inventory.celana[2],
-    sepatu: inventory.sepatu[0]
+    sepatu: inventory.sepatu[7]
 });
 
 const presets = ref([]);
@@ -211,35 +550,54 @@ const selectItem = (category, item) => {
             
             <!-- PANEL KIRI: VISUALIZER OUTFIT 2D & SAVER -->
             <section class="lg:col-span-5 flex flex-col gap-6">
-                <div class="bg-slate-900 rounded-3xl shadow-2xl border border-slate-800 flex flex-col items-center justify-center p-8 relative min-h-[460px]">
-                    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900/20 to-transparent pointer-events-none rounded-3xl"></div>
-                    
-                    <div class="relative w-full max-w-[220px] flex flex-col items-center z-10 transition-all duration-300">
-                        <div class="relative w-48 h-48 -mb-6 flex justify-center items-end drop-shadow-xl z-20">
+                <!-- CANVAS VISUALIZER WITH DYNAMIC BACKGROUND -->
+                <div 
+                    class="rounded-3xl shadow-2xl border border-slate-800 flex flex-col items-center justify-center p-8 relative min-h-[460px] transition-colors duration-500"
+                    :style="{ backgroundColor: selectedBg }"
+                >
+                    <!-- CANVAS BACKGROUND COLOR SELECTOR TOOLBAR -->
+                    <div class="absolute top-4 left-4 right-4 flex items-center justify-between bg-slate-950/70 backdrop-blur-md p-2 rounded-2xl border border-slate-800/80 z-30">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-2">Bg Color:</span>
+                        <div class="flex items-center gap-1.5 overflow-x-auto pr-1">
+                            <button 
+                                v-for="bg in canvasBgColors" 
+                                :key="bg.value"
+                                @click="selectedBg = bg.value"
+                                class="w-5 h-5 rounded-full border border-slate-700/80 transition-transform hover:scale-125 cursor-pointer flex-shrink-0"
+                                :style="{ backgroundColor: bg.value }"
+                                :title="bg.name"
+                                :class="selectedBg === bg.value ? 'ring-2 ring-indigo-500 scale-110' : ''"
+                            ></button>
+                            <!-- Custom Color Picker Input -->
+                            <label class="w-5 h-5 rounded-full border border-slate-700/80 cursor-pointer flex-shrink-0 relative overflow-hidden bg-gradient-to-tr from-amber-500 via-indigo-500 to-emerald-500 flex items-center justify-center" title="Custom Color">
+                                <input type="color" v-model="selectedBg" class="opacity-0 absolute inset-0 cursor-pointer w-full h-full" />
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="relative w-full max-w-[220px] flex flex-col items-center z-10 transition-all duration-300 mt-6">
+                        <div class="relative w-48 h-48 -mb-6 flex justify-center items-end drop-shadow-2xl z-20">
                             <svg viewBox="0 0 100 100" class="w-full h-full">
                                 <defs>
-                                    <!-- Dynamic ClipPath berdasarkan Siluet Outer yang aktif -->
                                     <clipPath id="outerSilhouetteClip" v-if="selectedOutfit.jacket.id !== 'j1'">
                                         <path :d="selectedOutfit.jacket.silhouette" />
                                     </clipPath>
                                 </defs>
 
-                                <!-- Layer 1 (Kaos/Kemeja): Diclip oleh silhouette outer saat outer aktif -->
                                 <g 
                                     :clip-path="selectedOutfit.jacket.id !== 'j1' ? 'url(#outerSilhouetteClip)' : undefined" 
                                     v-html="selectedOutfit.baju.paths"
                                 ></g>
 
-                                <!-- Layer 2 (Outer): Ditumpuk di atas kaos -->
                                 <g v-if="selectedOutfit.jacket.id !== 'j1'" v-html="selectedOutfit.jacket.paths"></g>
                             </svg>
                         </div>
 
-                        <div class="relative w-40 h-48 -mb-4 z-10 drop-shadow-xl">
+                        <div class="relative w-40 h-48 -mb-4 z-10 drop-shadow-2xl">
                             <svg viewBox="0 0 100 100" class="w-full h-full" v-html="selectedOutfit.celana.paths"></svg>
                         </div>
 
-                        <div class="relative w-36 h-16 z-0 drop-shadow-xl">
+                        <div class="relative w-36 h-16 z-0 drop-shadow-2xl">
                             <svg viewBox="0 0 100 50" class="w-full h-full" v-html="selectedOutfit.sepatu.paths"></svg>
                         </div>
                     </div>
