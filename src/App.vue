@@ -110,13 +110,14 @@ const inventory = {
                 <text x="63" y="38" fill="white" font-size="5" font-weight="900" font-family="Arial, sans-serif">TWN</text>
             `
         },
-        {
+       {
     id: 'b10', name: 'Batik Lengan Panjang Biru',
     paths: `
         <path fill="#1e3a8a" stroke="#172554" stroke-width="1.5" d="M25 18 L40 20 Q50 32 60 20 L75 18 L95 56 L83 68 L70 45 L70 96 L30 96 L30 45 L17 68 L5 56 Z" />
         <path fill="#172554" stroke="#0f172a" stroke-width="1.2" d="M30 18 L44 26 L50 20 L56 26 L70 18 L58 32 L42 32 Z" />
         <line x1="50" y1="32" x2="50" y2="96" stroke="#0f172a" stroke-width="2"/>
-        <g fill="#f59e0b" opacity="0.85">
+        <!-- Pattern Batik Biru Gelap (Navy Tone-on-Tone) -->
+        <g fill="#0f172a" opacity="0.9">
             <path d="M35 40 Q40 35 45 40 Q40 45 35 40 Z M55 40 Q60 35 65 40 Q60 45 55 40 Z" />
             <path d="M35 60 Q40 55 45 60 Q40 65 35 60 Z M55 60 Q60 55 65 60 Q60 65 55 60 Z" />
             <path d="M35 80 Q40 75 45 80 Q40 85 35 80 Z M55 80 Q60 75 65 80 Q60 85 55 80 Z" />
@@ -704,9 +705,17 @@ const selectItem = (category, item) => {
                             <svg viewBox="0 0 100 100" class="w-full h-full" v-html="selectedOutfit.celana.paths"></svg>
                         </div>
 
-                        <div class="relative w-36 h-16 z-0 drop-shadow-2xl">
+                        <!-- Display Sepatu Sepasang (Kiri Mirrored & Kanan Normal) -->
+                    <div class="relative w-40 h-10 z-0 drop-shadow-2xl flex justify-center items-center gap-1 -mt-2">
+                        <!-- Sepatu Kiri (Mirrored/Flips Horizontally) -->
+                        <div class="w-[68px] h-[34px] flex items-center justify-center transform -scale-x-100">
                             <svg viewBox="0 0 100 50" class="w-full h-full" v-html="selectedOutfit.sepatu.paths"></svg>
                         </div>
+                        <!-- Sepatu Kanan (Normal) -->
+                        <div class="w-[68px] h-[34px] flex items-center justify-center">
+                            <svg viewBox="0 0 100 50" class="w-full h-full" v-html="selectedOutfit.sepatu.paths"></svg>
+                        </div>
+                    </div>
                     </div>
                 </div>
 
