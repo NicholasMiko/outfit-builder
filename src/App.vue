@@ -648,9 +648,9 @@ const selectItem = (category, item) => {
         
         <header class="w-full max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <h1 class="text-3xl font-black tracking-tight text-white uppercase flex items-center gap-3">
-                <span class="text-indigo-500">2D</span> Outfit Builder
+                <span class="text-indigo-500">OUTFIT</span> Builder
             </h1>
-            <p class="text-slate-400 text-sm font-medium">Dynamic SVG Clipping Engine</p>
+            <p class="text-slate-400 text-sm font-medium">CHOOSE YOUR OWN</p>
         </header>
 
         <main class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1">
