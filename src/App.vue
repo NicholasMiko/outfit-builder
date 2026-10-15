@@ -585,6 +585,8 @@ const selectedOutfit = ref({
 
 // 3. LOGIKA SUPABASE AUTH & CLOUD PRESETS
 const user = ref(null);
+const authLoading = ref(true);
+const authBusy = ref(false);
 const email = ref('');
 const password = ref('');
 const presets = ref([]);
@@ -593,27 +595,39 @@ const presetName = ref('');
 onMounted(async () => {
     const { data } = await supabase.auth.getSession();
     user.value = data.session?.user || null;
+    authLoading.value = false;
 
-    if (user.value) {
-        fetchPresets();
-    }
+    if (user.value) fetchPresets();
 
     supabase.auth.onAuthStateChange((_event, session) => {
+        const prevId = user.value?.id;
         user.value = session?.user || null;
-        if (user.value) fetchPresets();
-        else presets.value = [];
+
+        if (!user.value) {
+            presets.value = [];
+            activeTab.value = 'baju';
+        } else if (user.value.id !== prevId) {
+            fetchPresets();
+        }
     });
 });
 
 const handleSignUp = async () => {
+    if (!email.value || !password.value) return alert('Email dan password wajib diisi.');
+    authBusy.value = true;
     const { error } = await supabase.auth.signUp({ email: email.value, password: password.value });
+    authBusy.value = false;
     if (error) alert(error.message);
     else alert('Cek email kamu buat verifikasi akun!');
 };
 
 const handleLogin = async () => {
+    if (!email.value || !password.value) return alert('Email dan password wajib diisi.');
+    authBusy.value = true;
     const { error } = await supabase.auth.signInWithPassword({ email: email.value, password: password.value });
+    authBusy.value = false;
     if (error) alert(error.message);
+    else password.value = '';
 };
 
 const handleLogout = async () => {
@@ -621,12 +635,15 @@ const handleLogout = async () => {
 };
 
 const fetchPresets = async () => {
+    if (!user.value) return;
     const { data, error } = await supabase
         .from('presets')
         .select('*')
+        .eq('user_id', user.value.id)
         .order('created_at', { ascending: false });
-    
-    if (!error) presets.value = data;
+
+    if (error) alert(error.message);
+    else presets.value = data;
 };
 
 const savePresetToCloud = async () => {
@@ -662,8 +679,14 @@ const loadPreset = (preset) => {
 };
 
 const deletePresetFromCloud = async (id) => {
-    const { error } = await supabase.from('presets').delete().eq('id', id);
-    if (!error) fetchPresets();
+    const { error } = await supabase
+        .from('presets')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.value.id);
+
+    if (error) alert(error.message);
+    else fetchPresets();
 };
 
 const selectItem = (category, item) => {
@@ -672,7 +695,38 @@ const selectItem = (category, item) => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-slate-950 text-slate-100 font-sans p-4 md:p-8 flex flex-col selection:bg-indigo-500 selection:text-white">
+    <!-- LOADING SESSION -->
+    <div v-if="authLoading" class="min-h-screen bg-slate-950 flex items-center justify-center text-slate-500 text-sm font-sans">
+        Memuat...
+    </div>
+
+    <!-- HALAMAN LOGIN -->
+    <div v-else-if="!user" class="min-h-screen bg-slate-950 text-slate-100 font-sans flex items-center justify-center p-4 selection:bg-indigo-500 selection:text-white">
+        <div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-8 flex flex-col gap-4 shadow-2xl">
+            <div class="flex flex-col items-center gap-1 mb-2">
+                <h1 class="text-2xl font-black uppercase tracking-tight text-white">
+                    <span class="text-indigo-500">2D</span> Outfit Builder
+                </h1>
+                <p class="text-xs text-slate-500">Login atau daftar untuk mulai menyimpan preset</p>
+            </div>
+
+            <form @submit.prevent="handleLogin" class="flex flex-col gap-3">
+                <input v-model="email" type="email" placeholder="Email..." autocomplete="email" class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500" />
+                <input v-model="password" type="password" placeholder="Password..." autocomplete="current-password" class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500" />
+                <div class="flex gap-2">
+                    <button type="submit" :disabled="authBusy" class="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white py-2.5 rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer">
+                        {{ authBusy ? '...' : 'Masuk' }}
+                    </button>
+                    <button type="button" @click="handleSignUp" :disabled="authBusy" class="flex-1 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-white py-2.5 rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer">
+                        Daftar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- HALAMAN BUILDER -->
+    <div v-else class="min-h-screen bg-slate-950 text-slate-100 font-sans p-4 md:p-8 flex flex-col selection:bg-indigo-500 selection:text-white">
         
         <header class="w-full max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <h1 class="text-3xl font-black uppercase tracking-tight text-white flex items-center gap-3">
@@ -680,11 +734,9 @@ const selectItem = (category, item) => {
             </h1>
 
             <!-- USER ACCOUNT BAR -->
-            <div class="flex items-center gap-3">
-                <div v-if="user" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-2xl">
-                    <span class="text-xs font-bold text-slate-300 truncate max-w-[150px]">{{ user.email }}</span>
-                    <button @click="handleLogout" class="text-xs text-red-400 font-bold hover:underline cursor-pointer">Logout</button>
-                </div>
+            <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-2xl">
+                <span class="text-xs font-bold text-slate-300 truncate max-w-[150px]">{{ user.email }}</span>
+                <button @click="handleLogout" class="text-xs text-red-400 font-bold hover:underline cursor-pointer">Logout</button>
             </div>
         </header>
 
@@ -750,25 +802,13 @@ const selectItem = (category, item) => {
                     </div>
                 </div>
 
-                <!-- FORM AUTH & PRESET CLOUD -->
+                <!-- FORM SIMPAN PRESET -->
                 <div class="bg-slate-900 rounded-3xl p-6 border border-slate-800 flex flex-col gap-3">
-                    <div v-if="!user" class="flex flex-col gap-3">
-                        <h2 class="text-xs font-black uppercase text-indigo-400 tracking-wider">Login / Daftar Akun Cloud</h2>
-                        <input v-model="email" type="email" placeholder="Email..." class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500" />
-                        <input v-model="password" type="password" placeholder="Password..." class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500" />
-                        <div class="flex gap-2">
-                            <button @click="handleLogin" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer">Masuk</button>
-                            <button @click="handleSignUp" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer">Daftar</button>
-                        </div>
-                    </div>
-
-                    <div v-else class="flex flex-col gap-3">
-                        <h2 class="text-xs font-black uppercase tracking-widest text-slate-400">Simpan Preset ke Akun</h2>
-                        <form @submit.prevent="savePresetToCloud" class="flex gap-2">
-                            <input v-model="presetName" type="text" placeholder="Nama Preset..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500" />
-                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer">Simpan</button>
-                        </form>
-                    </div>
+                    <h2 class="text-xs font-black uppercase tracking-widest text-slate-400">Simpan Preset ke Akun</h2>
+                    <form @submit.prevent="savePresetToCloud" class="flex gap-2">
+                        <input v-model="presetName" type="text" placeholder="Nama Preset..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500" />
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer">Simpan</button>
+                    </form>
                 </div>
             </section>
 
