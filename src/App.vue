@@ -39,11 +39,11 @@ const inventory = {
             ` 
         },
         {
-            id: 'b4', name: 'OP Blue Polo Orange Stripe',
+            id: 'b4', name: 'OP Navy Polo Orange Stripe',
             paths: `
-                <path fill="#0284c7" stroke="#0369a1" stroke-width="1.5" d="M25 18 L40 18 Q50 28 60 18 L75 18 L90 52 L78 62 L70 45 L70 96 L30 96 L30 45 L22 62 L10 52 Z" />
-                <path fill="#0284c7" stroke="#0284c7" stroke-width="1" d="M30 18 L42 24 L50 20 L58 24 L70 18 L58 30 L42 30 Z" />
-                <line x1="50" y1="20" x2="50" y2="40" stroke="#0369a1" stroke-width="2"/>
+                <path fill="#1e3a8a" stroke="#172554" stroke-width="1.5" d="M25 18 L40 18 Q50 28 60 18 L75 18 L90 52 L78 62 L70 45 L70 96 L30 96 L30 45 L22 62 L10 52 Z" />
+                <path fill="#172554" stroke="#1e3a8a" stroke-width="1" d="M30 18 L42 24 L50 20 L58 24 L70 18 L58 30 L42 30 Z" />
+                <line x1="50" y1="20" x2="50" y2="40" stroke="#1d4ed8" stroke-width="2"/>
                 <circle cx="50" cy="26" r="1" fill="#f8fafc"/>
                 <circle cx="50" cy="34" r="1" fill="#f8fafc"/>
                 <!-- Vertical Orange Stripe di Kiri -->
@@ -109,7 +109,38 @@ const inventory = {
                 <!-- Teks TWN Putih di Dada Kanan -->
                 <text x="63" y="38" fill="white" font-size="5" font-weight="900" font-family="Arial, sans-serif">TWN</text>
             `
-        }
+        },
+        {
+    id: 'b10', name: 'Batik Lengan Panjang Biru',
+    paths: `
+        <path fill="#1e3a8a" stroke="#172554" stroke-width="1.5" d="M25 18 L40 20 Q50 32 60 20 L75 18 L95 56 L83 68 L70 45 L70 96 L30 96 L30 45 L17 68 L5 56 Z" />
+        <path fill="#172554" stroke="#0f172a" stroke-width="1.2" d="M30 18 L44 26 L50 20 L56 26 L70 18 L58 32 L42 32 Z" />
+        <line x1="50" y1="32" x2="50" y2="96" stroke="#0f172a" stroke-width="2"/>
+        <g fill="#f59e0b" opacity="0.85">
+            <path d="M35 40 Q40 35 45 40 Q40 45 35 40 Z M55 40 Q60 35 65 40 Q60 45 55 40 Z" />
+            <path d="M35 60 Q40 55 45 60 Q40 65 35 60 Z M55 60 Q60 55 65 60 Q60 65 55 60 Z" />
+            <path d="M35 80 Q40 75 45 80 Q40 85 35 80 Z M55 80 Q60 75 65 80 Q60 85 55 80 Z" />
+            <path d="M18 45 L22 55 L15 52 Z M82 45 L78 55 L85 52 Z" />
+        </g>
+    `
+},
+{
+    id: 'b11', name: 'Batik Lengan Panjang Jade Green Grey',
+    paths: `
+        <path fill="#4a6b5d" stroke="#2d4239" stroke-width="1.5" d="M25 18 L40 20 Q50 32 60 20 L75 18 L95 56 L83 68 L70 45 L70 96 L30 96 L30 45 L17 68 L5 56 Z" />
+        <path fill="#2d4239" stroke="#1d2b25" stroke-width="1.2" d="M30 18 L44 26 L50 20 L56 26 L70 18 L58 32 L42 32 Z" />
+        <line x1="50" y1="32" x2="50" y2="96" stroke="#1d2b25" stroke-width="2"/>
+        <g fill="#cbd5e1" opacity="0.75">
+            <circle cx="38" cy="42" r="3" />
+            <circle cx="62" cy="42" r="3" />
+            <circle cx="38" cy="62" r="3" />
+            <circle cx="62" cy="62" r="3" />
+            <circle cx="38" cy="82" r="3" />
+            <circle cx="62" cy="82" r="3" />
+            <path d="M38 38 Q50 50 38 62 M62 38 Q50 50 62 62 M38 58 Q50 70 38 82 M62 58 Q50 70 62 82" stroke="#e2e8f0" stroke-width="1" fill="none"/>
+        </g>
+    `
+}
     ],
     jacket: [
         { 
@@ -259,7 +290,25 @@ const inventory = {
                 <circle cx="50" cy="46" r="2" fill="#ffffff"/>
                 <path fill="#18181b" d="M35 72 L65 72 L70 92 L30 92 Z" />
             `
-        }
+        },
+        {
+    id: 'j14', name: 'Adidas Black Hoodie Green Camo',
+    silhouette: `M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z`,
+    paths: `
+        <path fill="#0f172a" stroke="#1e293b" stroke-width="2" d="M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z" />
+        <path fill="#3f6212" stroke="#1a2e05" stroke-width="1.5" d="M40 18 Q50 30 60 18 C 65 8, 35 8, 40 18 Z" />
+        <path fill="#15803d" opacity="0.8" d="M42 12 Q 48 8 52 14 Q 46 16 42 12 Z" />
+        <path fill="#78350f" opacity="0.7" d="M48 10 Q 55 12 50 16 Q 44 14 48 10 Z" />
+        <path d="M45 25 L45 42 M55 25 L55 42" stroke="#1a2e05" stroke-width="2" stroke-linecap="round"/>
+        <g fill="#15803d">
+            <path d="M45 48 C 42 42, 38 46, 35 50 C 42 50, 46 47, 45 48 Z" />
+            <path d="M55 48 C 58 42, 62 46, 65 50 C 58 50, 54 47, 55 48 Z" />
+            <path d="M50 42 C 46 45, 48 52, 50 52 C 52 52, 54 45, 50 42 Z" />
+            <rect x="36" y="51" width="28" height="2" fill="#3f6212" />
+        </g>
+        <path fill="#1e293b" d="M35 72 L65 72 L70 92 L30 92 Z" />
+    `
+}
     ],
     celana: [
         { 
@@ -320,7 +369,20 @@ const inventory = {
                 <line x1="27" y1="12" x2="73" y2="12" stroke="#64748b" stroke-width="1" />
                 <path d="M27 14 L35 25 M73 14 L65 25" stroke="#64748b" stroke-width="1"/>
             `
-        }
+        },
+        {
+    id: 'c7', name: 'Celana Bahan Executive Biru',
+    paths: `
+        <path fill="#1d4ed8" stroke="#1e40af" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L77 15 L77 40 L64 100 L47 100 L50 38 L50 38 L53 100 L36 100 L23 40 L23 15 Z" />
+        <line x1="27" y1="10" x2="73" y2="10" stroke="#1e3a8a" stroke-width="1" />
+        <line x1="34" y1="0" x2="34" y2="10" stroke="#3b82f6" stroke-width="1.5"/>
+        <line x1="50" y1="0" x2="50" y2="10" stroke="#3b82f6" stroke-width="1.5"/>
+        <line x1="66" y1="0" x2="66" y2="10" stroke="#3b82f6" stroke-width="1.5"/>
+        <line x1="38" y1="15" x2="42" y2="98" stroke="#1e3a8a" stroke-width="1"/>
+        <line x1="62" y1="15" x2="58" y2="98" stroke="#1e3a8a" stroke-width="1"/>
+        <path d="M27 12 L35 25 M73 12 L65 25" stroke="#1e3a8a" stroke-width="1.2"/>
+    `
+}
     ],
     sepatu: [
         { 
@@ -472,7 +534,52 @@ const inventory = {
                 <path d="M36 18 L48 28 M38 22 L50 31 M40 26 L52 34" stroke="#ffffff" stroke-width="1.5" />
                 <path d="M37 19 L49 29 M39 23 L51 32" stroke="#0f172a" stroke-width="1" />
             `
-        }
+        },
+        {
+    id: 's10', name: 'Nike React Rejuven8 White Mule',
+    paths: `
+        <path fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" stroke-linejoin="round" d="M10 35 C 10 20, 28 12, 50 15 C 70 18, 88 24, 96 35 C 96 46, 80 50, 50 50 C 20 50, 10 46, 10 35 Z" />
+        <path fill="#f8fafc" stroke="#94a3b8" stroke-width="1" d="M25 35 C 25 22, 38 14, 52 17 C 72 20, 88 26, 94 35 C 92 42, 75 42, 50 42 C 32 42, 25 38, 25 35 Z" />
+        <g fill="#64748b" opacity="0.6">
+            <circle cx="45" cy="25" r="1.5" />
+            <circle cx="55" cy="27" r="1.5" />
+            <circle cx="65" cy="29" r="1.5" />
+            <circle cx="75" cy="31" r="1.5" />
+            <circle cx="50" cy="32" r="1.5" />
+            <circle cx="60" cy="34" r="1.5" />
+            <circle cx="70" cy="35" r="1.5" />
+        </g>
+        <path fill="#0f172a" d="M32 30 Q 38 34 46 28 Q 38 32 33 31 Z" />
+    `
+},
+{
+    id: 's11', name: 'NMD Hu Adidas All White',
+    paths: `
+        <path fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2" d="M12 38 C 12 45, 30 50, 50 50 C 75 50, 92 45, 92 38 C 92 36, 80 38, 50 38 C 25 38, 12 36, 12 38 Z" />
+        <rect x="20" y="38" width="14" height="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8" rx="1"/>
+        <rect x="68" y="39" width="12" height="5" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8" rx="1"/>
+        <path fill="#ffffff" stroke="#cbd5e1" stroke-width="1" d="M15 38 C 15 25, 22 10, 32 10 C 38 10, 42 18, 55 22 C 70 25, 88 28, 92 38 Z" />
+        <text x="40" y="26" fill="#e2e8f0" font-size="5" font-weight="900" font-family="Arial, sans-serif" transform="rotate(8 40 26)">HUMAN</text>
+        <path fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" d="M25 36 C 25 25, 32 20, 42 22 L 50 36 Z M60 36 C 65 28, 80 30, 90 36 Z" opacity="0.9" />
+        <path d="M28 22 Q 38 26 48 24" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="2,1" fill="none" />
+    `
+},
+{
+    id: 's12', name: 'NMD Hu Adidas Oreo White Black',
+    paths: `
+        <path fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" d="M12 38 C 12 45, 30 50, 50 50 C 75 50, 92 45, 92 38 C 92 36, 80 38, 50 38 C 25 38, 12 36, 12 38 Z" />
+        <rect x="20" y="38" width="14" height="6" fill="#0f172a" rx="1"/>
+        <rect x="68" y="39" width="12" height="5" fill="#0f172a" rx="1"/>
+        <path fill="#334155" stroke="#0f172a" stroke-width="1" d="M15 38 C 15 25, 22 10, 32 10 C 38 10, 42 18, 55 22 C 70 25, 88 28, 92 38 Z" />
+        <g stroke="#ffffff" stroke-width="0.8" opacity="0.6" stroke-dasharray="1,2">
+            <path d="M20 20 C 30 15, 50 22, 80 32" />
+            <path d="M22 28 C 35 24, 60 28, 85 35" />
+        </g>
+        <path fill="#0f172a" d="M25 36 C 25 25, 32 20, 42 22 L 50 36 Z M60 36 C 65 28, 80 30, 90 36 Z" />
+        <text x="40" y="26" fill="#ffffff" font-size="5" font-weight="900" font-family="Arial, sans-serif" transform="rotate(8 40 26)">CLOUDS</text>
+        <path d="M28 22 Q 38 26 48 24" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="2,1" fill="none" />
+    `
+}
     ]
 };
 
