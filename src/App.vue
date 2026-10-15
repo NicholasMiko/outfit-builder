@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { supabase } from './lib/supabaseClient';
 
 // 1. PALET WARNA BACKGROUND CANVAS
 const canvasBgColors = [
@@ -14,7 +15,7 @@ const canvasBgColors = [
 
 const selectedBg = ref('#0f172a');
 
-// 2. INVENTORI ITEM 2D (Lengkap dengan Nickname & Vector Detail)
+// 2. INVENTORI ITEM 2D LENGKAP
 const inventory = {
     baju: [
         { 
@@ -46,7 +47,6 @@ const inventory = {
                 <line x1="50" y1="20" x2="50" y2="40" stroke="#1d4ed8" stroke-width="2"/>
                 <circle cx="50" cy="26" r="1" fill="#f8fafc"/>
                 <circle cx="50" cy="34" r="1" fill="#f8fafc"/>
-                <!-- Vertical Orange Stripe di Kiri -->
                 <rect x="34" y="18" width="4" height="78" fill="#f97316"/>
             `
         },
@@ -56,7 +56,6 @@ const inventory = {
                 <path fill="#0f172a" stroke="#1e293b" stroke-width="1.5" d="M25 18 L40 18 Q50 28 60 18 L75 18 L90 52 L78 62 L70 45 L70 96 L30 96 L30 45 L22 62 L10 52 Z" />
                 <path fill="#1e293b" stroke="#0f172a" stroke-width="1" d="M30 18 L42 24 L50 20 L58 24 L70 18 L58 30 L42 30 Z" />
                 <line x1="50" y1="20" x2="50" y2="38" stroke="#334155" stroke-width="2"/>
-                <!-- Horizontal Blue & White Stripes di Perut -->
                 <rect x="30" y="58" width="40" height="4" fill="#38bdf8"/>
                 <rect x="30" y="64" width="40" height="3" fill="#ffffff"/>
             `
@@ -69,7 +68,6 @@ const inventory = {
                 <line x1="50" y1="20" x2="50" y2="38" stroke="#0284c7" stroke-width="2"/>
                 <circle cx="50" cy="26" r="1" fill="#1e3a8a"/>
                 <circle cx="50" cy="32" r="1" fill="#1e3a8a"/>
-                <!-- Logo Singa Giordano di Dada Kanan -->
                 <path fill="#1e3a8a" d="M60 36 Q 64 32 66 36 L 68 38 L 65 40 Q 62 38 60 36 Z" />
                 <circle cx="63" cy="35" r="1.5" fill="#f59e0b" />
             `
@@ -106,47 +104,43 @@ const inventory = {
                 <path fill="#1e3a8a" stroke="#172554" stroke-width="1.5" d="M25 18 L40 18 Q50 28 60 18 L75 18 L90 52 L78 62 L70 45 L70 96 L30 96 L30 45 L22 62 L10 52 Z" />
                 <path fill="#172554" stroke="#1e3a8a" stroke-width="1" d="M30 18 L42 24 L50 20 L58 24 L70 18 L58 30 L42 30 Z" />
                 <line x1="50" y1="20" x2="50" y2="38" stroke="#1d4ed8" stroke-width="2"/>
-                <!-- Teks TWN Putih di Dada Kanan -->
                 <text x="63" y="38" fill="white" font-size="5" font-weight="900" font-family="Arial, sans-serif">TWN</text>
             `
         },
-       {
-    id: 'b10', name: 'Batik Lengan Panjang Biru',
-    paths: `
-        <path fill="#1e3a8a" stroke="#172554" stroke-width="1.5" d="M25 18 L40 20 Q50 32 60 20 L75 18 L95 56 L83 68 L70 45 L70 96 L30 96 L30 45 L17 68 L5 56 Z" />
-        <path fill="#172554" stroke="#0f172a" stroke-width="1.2" d="M30 18 L44 26 L50 20 L56 26 L70 18 L58 32 L42 32 Z" />
-        <line x1="50" y1="32" x2="50" y2="96" stroke="#0f172a" stroke-width="2"/>
-        <!-- Pattern Batik Biru Gelap (Navy Tone-on-Tone) -->
-        <g fill="#0f172a" opacity="0.9">
-            <path d="M35 40 Q40 35 45 40 Q40 45 35 40 Z M55 40 Q60 35 65 40 Q60 45 55 40 Z" />
-            <path d="M35 60 Q40 55 45 60 Q40 65 35 60 Z M55 60 Q60 55 65 60 Q60 65 55 60 Z" />
-            <path d="M35 80 Q40 75 45 80 Q40 85 35 80 Z M55 80 Q60 75 65 80 Q60 85 55 80 Z" />
-            <path d="M18 45 L22 55 L15 52 Z M82 45 L78 55 L85 52 Z" />
-        </g>
-    `
-},
-{
-    id: 'b11', name: 'Batik Lengan Panjang Jade Green Grey',
-    paths: `
-        <path fill="#4a6b5d" stroke="#2d4239" stroke-width="1.5" d="M25 18 L40 20 Q50 32 60 20 L75 18 L95 56 L83 68 L70 45 L70 96 L30 96 L30 45 L17 68 L5 56 Z" />
-        <path fill="#2d4239" stroke="#1d2b25" stroke-width="1.2" d="M30 18 L44 26 L50 20 L56 26 L70 18 L58 32 L42 32 Z" />
-        <line x1="50" y1="32" x2="50" y2="96" stroke="#1d2b25" stroke-width="2"/>
-        <g fill="#cbd5e1" opacity="0.75">
-            <circle cx="38" cy="42" r="3" />
-            <circle cx="62" cy="42" r="3" />
-            <circle cx="38" cy="62" r="3" />
-            <circle cx="62" cy="62" r="3" />
-            <circle cx="38" cy="82" r="3" />
-            <circle cx="62" cy="82" r="3" />
-            <path d="M38 38 Q50 50 38 62 M62 38 Q50 50 62 62 M38 58 Q50 70 38 82 M62 58 Q50 70 62 82" stroke="#e2e8f0" stroke-width="1" fill="none"/>
-        </g>
-    `
-}
+        {
+            id: 'b10', name: 'Batik Lengan Panjang Biru',
+            paths: `
+                <path fill="#1e3a8a" stroke="#172554" stroke-width="1.5" d="M25 18 L40 20 Q50 32 60 20 L75 18 L95 56 L83 68 L70 45 L70 96 L30 96 L30 45 L17 68 L5 56 Z" />
+                <path fill="#172554" stroke="#0f172a" stroke-width="1.2" d="M30 18 L44 26 L50 20 L56 26 L70 18 L58 32 L42 32 Z" />
+                <line x1="50" y1="32" x2="50" y2="96" stroke="#0f172a" stroke-width="2"/>
+                <g fill="#0f172a" opacity="0.9">
+                    <path d="M35 40 Q40 35 45 40 Q40 45 35 40 Z M55 40 Q60 35 65 40 Q60 45 55 40 Z" />
+                    <path d="M35 60 Q40 55 45 60 Q40 65 35 60 Z M55 60 Q60 55 65 60 Q60 65 55 60 Z" />
+                    <path d="M35 80 Q40 75 45 80 Q40 85 35 80 Z M55 80 Q60 75 65 80 Q60 85 55 80 Z" />
+                    <path d="M18 45 L22 55 L15 52 Z M82 45 L78 55 L85 52 Z" />
+                </g>
+            `
+        },
+        {
+            id: 'b11', name: 'Batik Lengan Panjang Jade Green Grey',
+            paths: `
+                <path fill="#4a6b5d" stroke="#2d4239" stroke-width="1.5" d="M25 18 L40 20 Q50 32 60 20 L75 18 L95 56 L83 68 L70 45 L70 96 L30 96 L30 45 L17 68 L5 56 Z" />
+                <path fill="#2d4239" stroke="#1d2b25" stroke-width="1.2" d="M30 18 L44 26 L50 20 L56 26 L70 18 L58 32 L42 32 Z" />
+                <line x1="50" y1="32" x2="50" y2="96" stroke="#1d2b25" stroke-width="2"/>
+                <g fill="#cbd5e1" opacity="0.75">
+                    <circle cx="38" cy="42" r="3" />
+                    <circle cx="62" cy="42" r="3" />
+                    <circle cx="38" cy="62" r="3" />
+                    <circle cx="62" cy="62" r="3" />
+                    <circle cx="38" cy="82" r="3" />
+                    <circle cx="62" cy="82" r="3" />
+                    <path d="M38 38 Q50 50 38 62 M62 38 Q50 50 62 62 M38 58 Q50 70 38 82 M62 58 Q50 70 62 82" stroke="#e2e8f0" stroke-width="1" fill="none"/>
+                </g>
+            `
+        }
     ],
     jacket: [
-        { 
-            id: 'j1', name: 'Kosongkan (Kaos Saja)', paths: '', silhouette: '' 
-        },
+        { id: 'j1', name: 'Kosongkan (Kaos Saja)', paths: '', silhouette: '' },
         { 
             id: 'j2', name: 'Adidas Tracktop (Resleting 3/4)', 
             silhouette: `M38 15 L25 15 L8 52 L16 67 L26 45 L26 96 L74 96 L74 45 L84 67 L92 52 L75 15 L62 15 Q50 22 38 15 Z`,
@@ -193,11 +187,9 @@ const inventory = {
             id: 'j6', name: 'Executive Collar Black Zip',
             silhouette: `M32 18 L25 15 L8 52 L16 67 L26 45 L26 96 L74 96 L74 45 L84 67 L92 52 L75 15 L68 18 Q50 24 32 18 Z`,
             paths: `
-                <!-- Kerah Kerja Formal Terbuka -->
                 <path fill="#27272a" stroke="#09090b" stroke-width="1" d="M32 18 L42 24 L50 20 L58 24 L68 18 L58 28 L42 28 Z" />
                 <path fill="#18181b" stroke="#09090b" stroke-width="1.5" d="M32 18 L25 15 L8 52 L16 67 L26 45 L26 96 L46 96 L46 65 Z" />
                 <path fill="#18181b" stroke="#09090b" stroke-width="1.5" d="M68 18 L75 15 L92 52 L84 67 L74 45 L74 96 L54 96 L54 65 Z" />
-                <!-- Zipper Line & Puller -->
                 <path fill="#18181b" d="M46 65 L54 65 L54 96 L46 96 Z" />
                 <line x1="50" y1="65" x2="50" y2="96" stroke="#3f3f46" stroke-width="2"/>
                 <rect x="49" y="65" width="2" height="5" fill="#d4d4d8" rx="0.5"/>
@@ -209,7 +201,6 @@ const inventory = {
             paths: `
                 <path fill="#6b7280" stroke="#4b5563" stroke-width="2" d="M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z" />
                 <path d="M45 25 L45 45 M55 25 L55 45" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"/>
-                <!-- Logo CK Hitam & Calvin Klein Putih -->
                 <text x="50" y="55" fill="#111827" font-size="22" font-weight="900" font-family="Arial, sans-serif" text-anchor="middle">CK</text>
                 <text x="50" y="52" fill="#ffffff" font-size="5" font-weight="700" font-family="Arial, sans-serif" text-anchor="middle" letter-spacing="1">CALVIN KLEIN</text>
                 <path fill="#4b5563" d="M35 72 L65 72 L70 92 L30 92 Z" />
@@ -223,10 +214,8 @@ const inventory = {
                 <path fill="#312e81" stroke="#1e1b4b" stroke-width="1" d="M62 15 L75 15 L92 52 L84 67 L74 45 L74 96 L53 96 L53 68 Z" />
                 <path fill="#312e81" d="M47 68 L53 68 L53 96 L47 96 Z" />
                 <line x1="50" y1="68" x2="50" y2="96" stroke="#4338ca" stroke-width="2"/>
-                <!-- White Stripes di Lengan -->
                 <path d="M23 16 L7 50 M26 17 L10 51 M29 18 L13 52" stroke="white" stroke-width="1.5" />
                 <path d="M77 16 L93 50 M74 17 L90 51 M71 18 L87 52" stroke="white" stroke-width="1.5" />
-                <!-- Tulisan oasis & Logo Adidas Putih -->
                 <text x="35" y="45" fill="white" font-size="6" font-weight="900" font-family="Arial, sans-serif">oasis</text>
                 <path fill="white" d="M65 42 L68 37 L70 42 Z M68 42 L71 35 L73 42 Z M71 42 L74 33 L76 42 Z" />
             `
@@ -236,10 +225,8 @@ const inventory = {
             silhouette: `M35 18 Q50 26 65 18 L75 15 L95 55 L85 70 L72 45 L72 96 L28 96 L28 45 L15 70 L5 55 L25 15 Z`,
             paths: `
                 <path fill="#18181b" stroke="#09090b" stroke-width="2" d="M35 18 Q50 26 65 18 L75 15 L95 55 L85 70 L72 45 L72 96 L28 96 L28 45 L15 70 L5 55 L25 15 Z" />
-                <!-- Ribbed Collar & Hem -->
                 <path fill="#27272a" d="M35 18 Q50 26 65 18 Q50 22 35 18 Z M28 92 L72 92 L72 96 L28 96 Z" />
                 <line x1="50" y1="22" x2="50" y2="92" stroke="#27272a" stroke-width="2"/>
-                <!-- Logo Wrangler Putih Kecil di Dada Kanan -->
                 <text x="62" y="40" fill="white" font-size="4.5" font-weight="700" font-family="Georgia, serif">Wrangler</text>
             `
         },
@@ -247,10 +234,8 @@ const inventory = {
             id: 'j10', name: 'Boxy Black Zip Jacket',
             silhouette: `M32 16 Q50 22 68 16 L80 15 L98 56 L86 70 L76 45 L76 96 L24 96 L24 45 L14 70 L2 56 L20 15 Z`,
             paths: `
-                <!-- Potongan Boxy Lebar -->
                 <path fill="#09090b" stroke="#27272a" stroke-width="2" d="M32 16 Q50 22 68 16 L80 15 L98 56 L86 70 L76 45 L76 96 L24 96 L24 45 L14 70 L2 56 L20 15 Z" />
                 <line x1="50" y1="19" x2="50" y2="96" stroke="#3f3f46" stroke-width="2.5"/>
-                <!-- Large Flap Cargo Pockets Kiri Kanan -->
                 <rect x="28" y="60" width="16" height="20" fill="#18181b" stroke="#27272a" rx="1"/>
                 <rect x="56" y="60" width="16" height="20" fill="#18181b" stroke="#27272a" rx="1"/>
             `
@@ -261,9 +246,7 @@ const inventory = {
             paths: `
                 <path fill="#f8fafc" stroke="#e2e8f0" stroke-width="2" d="M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z" />
                 <path d="M45 25 L45 45 M55 25 L55 45" stroke="#64748b" stroke-width="1.5" stroke-linecap="round"/>
-                <!-- Logo The Godfather Hitam -->
                 <text x="50" y="48" fill="#0f172a" font-size="6" font-weight="900" font-family="Times New Roman, serif" text-anchor="middle">The Godfather</text>
-                <!-- Puppet Strings Icon -->
                 <path stroke="#0f172a" stroke-width="1" d="M42 52 L42 58 M46 52 L46 58 M54 52 L54 58 M58 52 L58 58" />
                 <path fill="#e2e8f0" d="M35 72 L65 72 L70 92 L30 92 Z" />
             `
@@ -274,7 +257,6 @@ const inventory = {
             paths: `
                 <path fill="#fef3c7" stroke="#fde68a" stroke-width="2" d="M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z" />
                 <path d="M45 25 L45 45 M55 25 L55 45" stroke="#d97706" stroke-width="1.5" stroke-linecap="round"/>
-                <!-- Tulisan JACK & JONES Hitam -->
                 <text x="50" y="46" fill="#18181b" font-size="5.5" font-weight="900" font-family="Arial, sans-serif" text-anchor="middle" letter-spacing="0.5">JACK &amp; JONES</text>
                 <path fill="#fde68a" d="M35 72 L65 72 L70 92 L30 92 Z" />
             `
@@ -285,7 +267,6 @@ const inventory = {
             paths: `
                 <path fill="#09090b" stroke="#27272a" stroke-width="2" d="M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z" />
                 <path d="M45 25 L45 45 M55 25 L55 45" stroke="#3f3f46" stroke-width="2" stroke-linecap="round"/>
-                <!-- Logo PSG Crest Embroidered -->
                 <circle cx="50" cy="46" r="8" fill="#1e3a8a" stroke="#ffffff" stroke-width="1"/>
                 <path fill="#ef4444" d="M48 48 L52 48 L50 40 Z" />
                 <circle cx="50" cy="46" r="2" fill="#ffffff"/>
@@ -293,97 +274,107 @@ const inventory = {
             `
         },
         {
-    id: 'j14', name: 'Adidas Black Hoodie Green Camo',
-    silhouette: `M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z`,
-    paths: `
-        <path fill="#0f172a" stroke="#1e293b" stroke-width="2" d="M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z" />
-        <path fill="#3f6212" stroke="#1a2e05" stroke-width="1.5" d="M40 18 Q50 30 60 18 C 65 8, 35 8, 40 18 Z" />
-        <path fill="#15803d" opacity="0.8" d="M42 12 Q 48 8 52 14 Q 46 16 42 12 Z" />
-        <path fill="#78350f" opacity="0.7" d="M48 10 Q 55 12 50 16 Q 44 14 48 10 Z" />
-        <path d="M45 25 L45 42 M55 25 L55 42" stroke="#1a2e05" stroke-width="2" stroke-linecap="round"/>
-        <g fill="#15803d">
-            <path d="M45 48 C 42 42, 38 46, 35 50 C 42 50, 46 47, 45 48 Z" />
-            <path d="M55 48 C 58 42, 62 46, 65 50 C 58 50, 54 47, 55 48 Z" />
-            <path d="M50 42 C 46 45, 48 52, 50 52 C 52 52, 54 45, 50 42 Z" />
-            <rect x="36" y="51" width="28" height="2" fill="#3f6212" />
-        </g>
-        <path fill="#1e293b" d="M35 72 L65 72 L70 92 L30 92 Z" />
-    `
-}
+            id: 'j14', name: 'Adidas Black Hoodie Green Camo',
+            silhouette: `M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z`,
+            paths: `
+                <path fill="#0f172a" stroke="#1e293b" stroke-width="2" d="M40 18 Q50 30 60 18 L75 15 L95 55 L85 70 L74 45 L74 96 L26 96 L26 45 L15 70 L5 55 L25 15 Z" />
+                <path fill="#3f6212" stroke="#1a2e05" stroke-width="1.5" d="M40 18 Q50 30 60 18 C 65 8, 35 8, 40 18 Z" />
+                <path fill="#15803d" opacity="0.8" d="M42 12 Q 48 8 52 14 Q 46 16 42 12 Z" />
+                <path fill="#78350f" opacity="0.7" d="M48 10 Q 55 12 50 16 Q 44 14 48 10 Z" />
+                <path d="M45 25 L45 42 M55 25 L55 42" stroke="#1a2e05" stroke-width="2" stroke-linecap="round"/>
+                <g fill="#15803d">
+                    <path d="M45 48 C 42 42, 38 46, 35 50 C 42 50, 46 47, 45 48 Z" />
+                    <path d="M55 48 C 58 42, 62 46, 65 50 C 58 50, 54 47, 55 48 Z" />
+                    <path d="M50 42 C 46 45, 48 52, 50 52 C 52 52, 54 45, 50 42 Z" />
+                    <rect x="36" y="51" width="28" height="2" fill="#3f6212" />
+                </g>
+                <path fill="#1e293b" d="M35 72 L65 72 L70 92 L30 92 Z" />
+            `
+        }
     ],
     celana: [
         { 
             id: 'c1', name: 'Light Blue Denim Ripped', 
             paths: `
-                <path fill="#93c5fd" stroke="#60a5fa" stroke-width="2" stroke-linejoin="round" d="M26 0 L74 0 L80 15 L80 40 L65 100 L45 100 L50 40 L50 40 L55 100 L35 100 L20 40 L20 15 Z" />
-                <path d="M26 15 L74 15" stroke="#60a5fa" stroke-width="1" />
-                <g stroke="#eff6ff" stroke-width="2.5" stroke-linecap="round">
-                    <line x1="26" y1="50" x2="40" y2="50" stroke-dasharray="2,3" />
-                    <line x1="60" y1="65" x2="72" y2="65" stroke-dasharray="2,3" />
-                    <line x1="28" y1="75" x2="35" y2="75" stroke-dasharray="2,3" />
+                <path fill="#93c5fd" stroke="#60a5fa" stroke-width="1.5" stroke-linejoin="round" d="M26 0 L74 0 L78 14 L76 40 L76 96 L60 96 L50 32 L40 96 L24 96 L24 40 L22 14 Z" />
+                <line x1="26" y1="8" x2="74" y2="8" stroke="#60a5fa" stroke-width="1" />
+                <path d="M50 8 L50 25 Q50 28 46 28" stroke="#3b82f6" stroke-width="1.2" fill="none" />
+                <path d="M26 8 Q34 8 36 20 M74 8 Q66 8 64 20" stroke="#3b82f6" stroke-width="1.2" fill="none" />
+                <g stroke="#ffffff" stroke-width="2" stroke-linecap="round">
+                    <line x1="27" y1="58" x2="37" y2="58" stroke-dasharray="2,2" />
+                    <line x1="63" y1="70" x2="73" y2="70" stroke-dasharray="2,2" />
                 </g>
             ` 
         },
         { 
             id: 'c2', name: 'Celana Abu Oversize', 
             paths: `
-                <path fill="#9ca3af" stroke="#6b7280" stroke-width="2" stroke-linejoin="round" d="M26 0 L74 0 L85 15 L85 50 L75 100 L45 100 L50 40 L50 40 L55 100 L25 100 L15 50 L15 15 Z" />
-                <path d="M30 20 L25 60 M70 20 L75 60 M45 70 L40 95 M55 70 L60 95" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                <path fill="#9ca3af" stroke="#6b7280" stroke-width="1.5" stroke-linejoin="round" d="M26 0 L74 0 L82 14 L82 40 L80 96 L58 96 L50 32 L42 96 L20 96 L18 40 L18 14 Z" />
+                <line x1="26" y1="8" x2="74" y2="8" stroke="#6b7280" stroke-width="1" />
+                <path d="M50 8 L50 25 Q50 28 46 28" stroke="#4b5563" stroke-width="1.2" fill="none" />
+                <path d="M26 8 Q36 8 38 22 M74 8 Q64 8 62 22" stroke="#4b5563" stroke-width="1.2" fill="none" />
+                <path d="M28 45 Q30 70 26 90 M72 45 Q70 70 74 90" stroke="#6b7280" stroke-width="1" fill="none" opacity="0.6"/>
             ` 
         },
         { 
             id: 'c3', name: 'Celana Bahan Executive Hitam', 
             paths: `
-                <path fill="#0f172a" stroke="#1e293b" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L77 15 L77 40 L64 100 L47 100 L50 38 L50 38 L53 100 L36 100 L23 40 L23 15 Z" />
-                <line x1="27" y1="10" x2="73" y2="10" stroke="#334155" stroke-width="1" />
-                <line x1="34" y1="0" x2="34" y2="10" stroke="#475569" stroke-width="1.5"/>
-                <line x1="50" y1="0" x2="50" y2="10" stroke="#475569" stroke-width="1.5"/>
-                <line x1="66" y1="0" x2="66" y2="10" stroke="#475569" stroke-width="1.5"/>
-                <line x1="38" y1="15" x2="42" y2="98" stroke="#334155" stroke-width="1"/>
-                <line x1="62" y1="15" x2="58" y2="98" stroke="#334155" stroke-width="1"/>
-                <path d="M27 12 L35 25 M73 12 L65 25" stroke="#334155" stroke-width="1.2"/>
+                <path fill="#0f172a" stroke="#1e293b" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L77 14 L75 38 L74 96 L59 96 L50 32 L41 96 L26 96 L25 38 L23 14 Z" />
+                <line x1="27" y1="8" x2="73" y2="8" stroke="#334155" stroke-width="1" />
+                <line x1="33" y1="0" x2="33" y2="8" stroke="#475569" stroke-width="1.5"/>
+                <line x1="50" y1="0" x2="50" y2="8" stroke="#475569" stroke-width="1.5"/>
+                <line x1="67" y1="0" x2="67" y2="8" stroke="#475569" stroke-width="1.5"/>
+                <path d="M50 8 L50 26" stroke="#334155" stroke-width="1.2" />
+                <line x1="33.5" y1="14" x2="33.5" y2="94" stroke="#334155" stroke-width="1"/>
+                <line x1="66.5" y1="14" x2="66.5" y2="94" stroke="#334155" stroke-width="1"/>
+                <path d="M27 10 L35 22 M73 10 L65 22" stroke="#334155" stroke-width="1.2"/>
             ` 
         },
         {
             id: 'c4', name: 'Slim Fit Black Jeans',
             paths: `
-                <path fill="#18181b" stroke="#27272a" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L77 15 L77 40 L63 100 L47 100 L50 38 L50 38 L53 100 L37 100 L23 40 L23 15 Z" />
-                <line x1="27" y1="12" x2="73" y2="12" stroke="#3f3f46" stroke-width="1" />
-                <path d="M27 14 L35 25 M73 14 L65 25" stroke="#3f3f46" stroke-width="1"/>
-                <!-- Rivets Denim -->
-                <circle cx="35" cy="25" r="0.8" fill="#d4d4d8"/>
-                <circle cx="65" cy="25" r="0.8" fill="#d4d4d8"/>
+                <path fill="#18181b" stroke="#27272a" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L76 14 L74 38 L73 96 L60 96 L50 32 L40 96 L27 96 L26 38 L24 14 Z" />
+                <line x1="27" y1="8" x2="73" y2="8" stroke="#3f3f46" stroke-width="1" />
+                <path d="M50 8 L50 25 Q50 28 46 28" stroke="#3f3f46" stroke-width="1.2" fill="none" />
+                <path d="M27 8 Q34 8 36 18 M73 8 Q66 8 64 18" stroke="#3f3f46" stroke-width="1.2" fill="none"/>
+                <circle cx="36" cy="18" r="0.8" fill="#d4d4d8"/>
+                <circle cx="64" cy="18" r="0.8" fill="#d4d4d8"/>
             `
         },
         {
             id: 'c5', name: 'Slim Fit Chino Cream',
             paths: `
-                <path fill="#fef3c7" stroke="#fde68a" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L77 15 L77 40 L63 100 L47 100 L50 38 L50 38 L53 100 L37 100 L23 40 L23 15 Z" />
-                <line x1="27" y1="12" x2="73" y2="12" stroke="#d97706" stroke-width="1" />
-                <path d="M27 14 L35 25 M73 14 L65 25" stroke="#d97706" stroke-width="1"/>
+                <path fill="#fef3c7" stroke="#fde68a" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L76 14 L74 38 L73 96 L60 96 L50 32 L40 96 L27 96 L26 38 L24 14 Z" />
+                <line x1="27" y1="8" x2="73" y2="8" stroke="#d97706" stroke-width="1" />
+                <path d="M50 8 L50 25 Q50 28 46 28" stroke="#d97706" stroke-width="1.2" fill="none" />
+                <path d="M27 8 L35 20 M73 8 L65 20" stroke="#d97706" stroke-width="1.2"/>
+                <line x1="27" y1="92" x2="40" y2="92" stroke="#d97706" stroke-width="0.8"/>
+                <line x1="60" y1="92" x2="73" y2="92" stroke="#d97706" stroke-width="0.8"/>
             `
         },
         {
             id: 'c6', name: 'H&M Light Grey Slim Jeans',
             paths: `
-                <path fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L77 15 L77 40 L63 100 L47 100 L50 38 L50 38 L53 100 L37 100 L23 40 L23 15 Z" />
-                <line x1="27" y1="12" x2="73" y2="12" stroke="#64748b" stroke-width="1" />
-                <path d="M27 14 L35 25 M73 14 L65 25" stroke="#64748b" stroke-width="1"/>
+                <path fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L76 14 L74 38 L73 96 L60 96 L50 32 L40 96 L27 96 L26 38 L24 14 Z" />
+                <line x1="27" y1="8" x2="73" y2="8" stroke="#64748b" stroke-width="1" />
+                <path d="M50 8 L50 25 Q50 28 46 28" stroke="#64748b" stroke-width="1.2" fill="none" />
+                <path d="M27 8 Q34 8 36 18 M73 8 Q66 8 64 18" stroke="#64748b" stroke-width="1.2" fill="none"/>
             `
         },
         {
-    id: 'c7', name: 'Celana Bahan Executive Biru',
-    paths: `
-        <path fill="#1d4ed8" stroke="#1e40af" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L77 15 L77 40 L64 100 L47 100 L50 38 L50 38 L53 100 L36 100 L23 40 L23 15 Z" />
-        <line x1="27" y1="10" x2="73" y2="10" stroke="#1e3a8a" stroke-width="1" />
-        <line x1="34" y1="0" x2="34" y2="10" stroke="#3b82f6" stroke-width="1.5"/>
-        <line x1="50" y1="0" x2="50" y2="10" stroke="#3b82f6" stroke-width="1.5"/>
-        <line x1="66" y1="0" x2="66" y2="10" stroke="#3b82f6" stroke-width="1.5"/>
-        <line x1="38" y1="15" x2="42" y2="98" stroke="#1e3a8a" stroke-width="1"/>
-        <line x1="62" y1="15" x2="58" y2="98" stroke="#1e3a8a" stroke-width="1"/>
-        <path d="M27 12 L35 25 M73 12 L65 25" stroke="#1e3a8a" stroke-width="1.2"/>
-    `
-}
+            id: 'c7', name: 'Celana Bahan Executive Biru',
+            paths: `
+                <path fill="#1d4ed8" stroke="#1e40af" stroke-width="1.5" stroke-linejoin="round" d="M27 0 L73 0 L77 14 L75 38 L74 96 L59 96 L50 32 L41 96 L26 96 L25 38 L23 14 Z" />
+                <line x1="27" y1="8" x2="73" y2="8" stroke="#1e3a8a" stroke-width="1" />
+                <line x1="33" y1="0" x2="33" y2="8" stroke="#3b82f6" stroke-width="1.5"/>
+                <line x1="50" y1="0" x2="50" y2="8" stroke="#3b82f6" stroke-width="1.5"/>
+                <line x1="67" y1="0" x2="67" y2="8" stroke="#3b82f6" stroke-width="1.5"/>
+                <path d="M50 8 L50 26" stroke="#1e3a8a" stroke-width="1.2" />
+                <line x1="33.5" y1="14" x2="33.5" y2="94" stroke="#1e3a8a" stroke-width="1"/>
+                <line x1="66.5" y1="14" x2="66.5" y2="94" stroke="#1e3a8a" stroke-width="1"/>
+                <path d="M27 10 L35 22 M73 10 L65 22" stroke="#1e3a8a" stroke-width="1.2"/>
+            `
+        }
     ],
     sepatu: [
         { 
@@ -537,50 +528,50 @@ const inventory = {
             `
         },
         {
-    id: 's10', name: 'Nike React Rejuven8 White Mule',
-    paths: `
-        <path fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" stroke-linejoin="round" d="M10 35 C 10 20, 28 12, 50 15 C 70 18, 88 24, 96 35 C 96 46, 80 50, 50 50 C 20 50, 10 46, 10 35 Z" />
-        <path fill="#f8fafc" stroke="#94a3b8" stroke-width="1" d="M25 35 C 25 22, 38 14, 52 17 C 72 20, 88 26, 94 35 C 92 42, 75 42, 50 42 C 32 42, 25 38, 25 35 Z" />
-        <g fill="#64748b" opacity="0.6">
-            <circle cx="45" cy="25" r="1.5" />
-            <circle cx="55" cy="27" r="1.5" />
-            <circle cx="65" cy="29" r="1.5" />
-            <circle cx="75" cy="31" r="1.5" />
-            <circle cx="50" cy="32" r="1.5" />
-            <circle cx="60" cy="34" r="1.5" />
-            <circle cx="70" cy="35" r="1.5" />
-        </g>
-        <path fill="#0f172a" d="M32 30 Q 38 34 46 28 Q 38 32 33 31 Z" />
-    `
-},
-{
-    id: 's11', name: 'NMD Hu Adidas All White',
-    paths: `
-        <path fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2" d="M12 38 C 12 45, 30 50, 50 50 C 75 50, 92 45, 92 38 C 92 36, 80 38, 50 38 C 25 38, 12 36, 12 38 Z" />
-        <rect x="20" y="38" width="14" height="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8" rx="1"/>
-        <rect x="68" y="39" width="12" height="5" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8" rx="1"/>
-        <path fill="#ffffff" stroke="#cbd5e1" stroke-width="1" d="M15 38 C 15 25, 22 10, 32 10 C 38 10, 42 18, 55 22 C 70 25, 88 28, 92 38 Z" />
-        <text x="40" y="26" fill="#e2e8f0" font-size="5" font-weight="900" font-family="Arial, sans-serif" transform="rotate(8 40 26)">HUMAN</text>
-        <path fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" d="M25 36 C 25 25, 32 20, 42 22 L 50 36 Z M60 36 C 65 28, 80 30, 90 36 Z" opacity="0.9" />
-        <path d="M28 22 Q 38 26 48 24" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="2,1" fill="none" />
-    `
-},
-{
-    id: 's12', name: 'NMD Hu Adidas Oreo White Black',
-    paths: `
-        <path fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" d="M12 38 C 12 45, 30 50, 50 50 C 75 50, 92 45, 92 38 C 92 36, 80 38, 50 38 C 25 38, 12 36, 12 38 Z" />
-        <rect x="20" y="38" width="14" height="6" fill="#0f172a" rx="1"/>
-        <rect x="68" y="39" width="12" height="5" fill="#0f172a" rx="1"/>
-        <path fill="#334155" stroke="#0f172a" stroke-width="1" d="M15 38 C 15 25, 22 10, 32 10 C 38 10, 42 18, 55 22 C 70 25, 88 28, 92 38 Z" />
-        <g stroke="#ffffff" stroke-width="0.8" opacity="0.6" stroke-dasharray="1,2">
-            <path d="M20 20 C 30 15, 50 22, 80 32" />
-            <path d="M22 28 C 35 24, 60 28, 85 35" />
-        </g>
-        <path fill="#0f172a" d="M25 36 C 25 25, 32 20, 42 22 L 50 36 Z M60 36 C 65 28, 80 30, 90 36 Z" />
-        <text x="40" y="26" fill="#ffffff" font-size="5" font-weight="900" font-family="Arial, sans-serif" transform="rotate(8 40 26)">CLOUDS</text>
-        <path d="M28 22 Q 38 26 48 24" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="2,1" fill="none" />
-    `
-}
+            id: 's10', name: 'Nike React Rejuven8 White Mule',
+            paths: `
+                <path fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" stroke-linejoin="round" d="M10 35 C 10 20, 28 12, 50 15 C 70 18, 88 24, 96 35 C 96 46, 80 50, 50 50 C 20 50, 10 46, 10 35 Z" />
+                <path fill="#f8fafc" stroke="#94a3b8" stroke-width="1" d="M25 35 C 25 22, 38 14, 52 17 C 72 20, 88 26, 94 35 C 92 42, 75 42, 50 42 C 32 42, 25 38, 25 35 Z" />
+                <g fill="#64748b" opacity="0.6">
+                    <circle cx="45" cy="25" r="1.5" />
+                    <circle cx="55" cy="27" r="1.5" />
+                    <circle cx="65" cy="29" r="1.5" />
+                    <circle cx="75" cy="31" r="1.5" />
+                    <circle cx="50" cy="32" r="1.5" />
+                    <circle cx="60" cy="34" r="1.5" />
+                    <circle cx="70" cy="35" r="1.5" />
+                </g>
+                <path fill="#0f172a" d="M32 30 Q 38 34 46 28 Q 38 32 33 31 Z" />
+            `
+        },
+        {
+            id: 's11', name: 'NMD Hu Adidas All White',
+            paths: `
+                <path fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2" d="M12 38 C 12 45, 30 50, 50 50 C 75 50, 92 45, 92 38 C 92 36, 80 38, 50 38 C 25 38, 12 36, 12 38 Z" />
+                <rect x="20" y="38" width="14" height="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8" rx="1"/>
+                <rect x="68" y="39" width="12" height="5" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8" rx="1"/>
+                <path fill="#ffffff" stroke="#cbd5e1" stroke-width="1" d="M15 38 C 15 25, 22 10, 32 10 C 38 10, 42 18, 55 22 C 70 25, 88 28, 92 38 Z" />
+                <text x="40" y="26" fill="#e2e8f0" font-size="5" font-weight="900" font-family="Arial, sans-serif" transform="rotate(8 40 26)">HUMAN</text>
+                <path fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" d="M25 36 C 25 25, 32 20, 42 22 L 50 36 Z M60 36 C 65 28, 80 30, 90 36 Z" opacity="0.9" />
+                <path d="M28 22 Q 38 26 48 24" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="2,1" fill="none" />
+            `
+        },
+        {
+            id: 's12', name: 'NMD Hu Adidas Oreo White Black',
+            paths: `
+                <path fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" d="M12 38 C 12 45, 30 50, 50 50 C 75 50, 92 45, 92 38 C 92 36, 80 38, 50 38 C 25 38, 12 36, 12 38 Z" />
+                <rect x="20" y="38" width="14" height="6" fill="#0f172a" rx="1"/>
+                <rect x="68" y="39" width="12" height="5" fill="#0f172a" rx="1"/>
+                <path fill="#334155" stroke="#0f172a" stroke-width="1" d="M15 38 C 15 25, 22 10, 32 10 C 38 10, 42 18, 55 22 C 70 25, 88 28, 92 38 Z" />
+                <g stroke="#ffffff" stroke-width="0.8" opacity="0.6" stroke-dasharray="1,2">
+                    <path d="M20 20 C 30 15, 50 22, 80 32" />
+                    <path d="M22 28 C 35 24, 60 28, 85 35" />
+                </g>
+                <path fill="#0f172a" d="M25 36 C 25 25, 32 20, 42 22 L 50 36 Z M60 36 C 65 28, 80 30, 90 36 Z" />
+                <text x="40" y="26" fill="#ffffff" font-size="5" font-weight="900" font-family="Arial, sans-serif" transform="rotate(8 40 26)">CLOUDS</text>
+                <path d="M28 22 Q 38 26 48 24" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="2,1" fill="none" />
+            `
+        }
     ]
 };
 
@@ -592,25 +583,58 @@ const selectedOutfit = ref({
     sepatu: inventory.sepatu[7]
 });
 
+// 3. LOGIKA SUPABASE AUTH & CLOUD PRESETS
+const user = ref(null);
+const email = ref('');
+const password = ref('');
 const presets = ref([]);
 const presetName = ref('');
 
-onMounted(() => {
-    const saved = localStorage.getItem('outfit_builder_presets');
-    if (saved) {
-        try {
-            presets.value = JSON.parse(saved);
-        } catch (e) {
-            presets.value = [];
-        }
+onMounted(async () => {
+    const { data } = await supabase.auth.getSession();
+    user.value = data.session?.user || null;
+
+    if (user.value) {
+        fetchPresets();
     }
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+        user.value = session?.user || null;
+        if (user.value) fetchPresets();
+        else presets.value = [];
+    });
 });
 
-const savePreset = () => {
+const handleSignUp = async () => {
+    const { error } = await supabase.auth.signUp({ email: email.value, password: password.value });
+    if (error) alert(error.message);
+    else alert('Cek email kamu buat verifikasi akun!');
+};
+
+const handleLogin = async () => {
+    const { error } = await supabase.auth.signInWithPassword({ email: email.value, password: password.value });
+    if (error) alert(error.message);
+};
+
+const handleLogout = async () => {
+    await supabase.auth.signOut();
+};
+
+const fetchPresets = async () => {
+    const { data, error } = await supabase
+        .from('presets')
+        .select('*')
+        .order('created_at', { ascending: false });
+    
+    if (!error) presets.value = data;
+};
+
+const savePresetToCloud = async () => {
+    if (!user.value) return alert('Harus login dulu buat simpan preset ke akun!');
     if (!presetName.value.trim()) return;
 
     const newPreset = {
-        id: Date.now(),
+        user_id: user.value.id,
         name: presetName.value.trim(),
         items: {
             bajuId: selectedOutfit.value.baju.id,
@@ -620,9 +644,12 @@ const savePreset = () => {
         }
     };
 
-    presets.value.push(newPreset);
-    localStorage.setItem('outfit_builder_presets', JSON.stringify(presets.value));
-    presetName.value = '';
+    const { error } = await supabase.from('presets').insert([newPreset]);
+    if (error) alert(error.message);
+    else {
+        presetName.value = '';
+        fetchPresets();
+    }
 };
 
 const loadPreset = (preset) => {
@@ -634,9 +661,9 @@ const loadPreset = (preset) => {
     };
 };
 
-const deletePreset = (id) => {
-    presets.value = presets.value.filter(p => p.id !== id);
-    localStorage.setItem('outfit_builder_presets', JSON.stringify(presets.value));
+const deletePresetFromCloud = async (id) => {
+    const { error } = await supabase.from('presets').delete().eq('id', id);
+    if (!error) fetchPresets();
 };
 
 const selectItem = (category, item) => {
@@ -648,10 +675,17 @@ const selectItem = (category, item) => {
     <div class="min-h-screen bg-slate-950 text-slate-100 font-sans p-4 md:p-8 flex flex-col selection:bg-indigo-500 selection:text-white">
         
         <header class="w-full max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-            <h1 class="text-3xl font-black tracking-tight text-white uppercase flex items-center gap-3">
-                <span class="text-indigo-500">OUTFIT</span> Builder
+            <h1 class="text-3xl font-black uppercase tracking-tight text-white flex items-center gap-3">
+                <span class="text-indigo-500">2D</span> Outfit Builder
             </h1>
-            <p class="text-slate-400 text-sm font-medium">CHOOSE YOUR OWN</p>
+
+            <!-- USER ACCOUNT BAR -->
+            <div class="flex items-center gap-3">
+                <div v-if="user" class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-4 py-2 rounded-2xl">
+                    <span class="text-xs font-bold text-slate-300 truncate max-w-[150px]">{{ user.email }}</span>
+                    <button @click="handleLogout" class="text-xs text-red-400 font-bold hover:underline cursor-pointer">Logout</button>
+                </div>
+            </div>
         </header>
 
         <main class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1">
@@ -676,7 +710,6 @@ const selectItem = (category, item) => {
                                 :title="bg.name"
                                 :class="selectedBg === bg.value ? 'ring-2 ring-indigo-500 scale-110' : ''"
                             ></button>
-                            <!-- Custom Color Picker Input -->
                             <label class="w-5 h-5 rounded-full border border-slate-700/80 cursor-pointer flex-shrink-0 relative overflow-hidden bg-gradient-to-tr from-amber-500 via-indigo-500 to-emerald-500 flex items-center justify-center" title="Custom Color">
                                 <input type="color" v-model="selectedBg" class="opacity-0 absolute inset-0 cursor-pointer w-full h-full" />
                             </label>
@@ -705,52 +738,52 @@ const selectItem = (category, item) => {
                             <svg viewBox="0 0 100 100" class="w-full h-full" v-html="selectedOutfit.celana.paths"></svg>
                         </div>
 
-                        <!-- Display Sepatu Sepasang (Kiri Mirrored & Kanan Normal) -->
-                    <div class="relative w-40 h-10 z-0 drop-shadow-2xl flex justify-center items-center gap-1 -mt-2">
-                        <!-- Sepatu Kiri (Mirrored/Flips Horizontally) -->
-                        <div class="w-[68px] h-[34px] flex items-center justify-center transform -scale-x-100">
-                            <svg viewBox="0 0 100 50" class="w-full h-full" v-html="selectedOutfit.sepatu.paths"></svg>
+                        <!-- DISPLAY SEPATU PAIRS MIRRORED -->
+                        <div class="relative w-40 h-10 z-0 drop-shadow-2xl flex justify-center items-center gap-1 -mt-2">
+                            <div class="w-[68px] h-[34px] flex items-center justify-center transform -scale-x-100">
+                                <svg viewBox="0 0 100 50" class="w-full h-full" v-html="selectedOutfit.sepatu.paths"></svg>
+                            </div>
+                            <div class="w-[68px] h-[34px] flex items-center justify-center">
+                                <svg viewBox="0 0 100 50" class="w-full h-full" v-html="selectedOutfit.sepatu.paths"></svg>
+                            </div>
                         </div>
-                        <!-- Sepatu Kanan (Normal) -->
-                        <div class="w-[68px] h-[34px] flex items-center justify-center">
-                            <svg viewBox="0 0 100 50" class="w-full h-full" v-html="selectedOutfit.sepatu.paths"></svg>
-                        </div>
-                    </div>
                     </div>
                 </div>
 
-                <!-- FORM SIMPAN PRESET -->
+                <!-- FORM AUTH & PRESET CLOUD -->
                 <div class="bg-slate-900 rounded-3xl p-6 border border-slate-800 flex flex-col gap-3">
-                    <h2 class="text-xs font-black uppercase tracking-widest text-slate-400">Simpan Kombinasi Ini</h2>
-                    <form @submit.prevent="savePreset" class="flex gap-2">
-                        <input 
-                            v-model="presetName" 
-                            type="text" 
-                            placeholder="Nama Preset (misal: Formal Office)..." 
-                            class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500"
-                        />
-                        <button 
-                            type="submit" 
-                            class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
-                        >
-                            Simpan
-                        </button>
-                    </form>
+                    <div v-if="!user" class="flex flex-col gap-3">
+                        <h2 class="text-xs font-black uppercase text-indigo-400 tracking-wider">Login / Daftar Akun Cloud</h2>
+                        <input v-model="email" type="email" placeholder="Email..." class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500" />
+                        <input v-model="password" type="password" placeholder="Password..." class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500" />
+                        <div class="flex gap-2">
+                            <button @click="handleLogin" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer">Masuk</button>
+                            <button @click="handleSignUp" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer">Daftar</button>
+                        </div>
+                    </div>
+
+                    <div v-else class="flex flex-col gap-3">
+                        <h2 class="text-xs font-black uppercase tracking-widest text-slate-400">Simpan Preset ke Akun</h2>
+                        <form @submit.prevent="savePresetToCloud" class="flex gap-2">
+                            <input v-model="presetName" type="text" placeholder="Nama Preset..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-500" />
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-xl text-xs font-bold uppercase transition-colors cursor-pointer">Simpan</button>
+                        </form>
+                    </div>
                 </div>
             </section>
 
-            <!-- PANEL KANAN: KONTROL INVENTORI & LIST PRESET -->
+            <!-- PANEL KANAN: INVENTORI & PRESET SAVED -->
             <section class="lg:col-span-7 bg-slate-900 rounded-3xl shadow-2xl border border-slate-800 flex flex-col overflow-hidden">
                 <nav class="flex border-b border-slate-800 bg-slate-950/50">
                     <button v-for="(items, key) in inventory" :key="key" 
                         @click="activeTab = key"
-                        class="flex-1 py-4 px-2 text-sm font-bold uppercase tracking-widest transition-colors border-b-2"
+                        class="flex-1 py-4 px-2 text-sm font-bold uppercase tracking-widest transition-colors border-b-2 cursor-pointer"
                         :class="activeTab === key ? 'border-indigo-500 text-indigo-400 bg-slate-800/50' : 'border-transparent text-slate-500 hover:text-slate-300'">
                         {{ key }}
                     </button>
                     <button 
                         @click="activeTab = 'presets'"
-                        class="flex-1 py-4 px-2 text-sm font-bold uppercase tracking-widest transition-colors border-b-2"
+                        class="flex-1 py-4 px-2 text-sm font-bold uppercase tracking-widest transition-colors border-b-2 cursor-pointer"
                         :class="activeTab === 'presets' ? 'border-indigo-500 text-indigo-400 bg-slate-800/50' : 'border-transparent text-slate-500 hover:text-slate-300'">
                         Saved ({{ presets.length }})
                     </button>
@@ -784,7 +817,7 @@ const selectItem = (category, item) => {
                 <div v-else class="p-6 overflow-y-auto custom-scrollbar h-full min-h-[400px]">
                     <div v-if="presets.length === 0" class="flex flex-col items-center justify-center h-64 text-slate-600 gap-2">
                         <span class="text-4xl">📁</span>
-                        <p class="text-sm font-medium">Belum ada preset tersimpan</p>
+                        <p class="text-sm font-medium">Belum ada preset cloud tersimpan.</p>
                     </div>
 
                     <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -792,7 +825,7 @@ const selectItem = (category, item) => {
                             <div class="flex flex-col gap-1 overflow-hidden">
                                 <span class="font-bold text-sm text-slate-200 truncate">{{ preset.name }}</span>
                                 <span class="text-[10px] uppercase font-semibold text-slate-500 tracking-wider">
-                                    {{ new Date(preset.id).toLocaleDateString() }}
+                                    {{ new Date(preset.created_at).toLocaleDateString() }}
                                 </span>
                             </div>
 
@@ -804,7 +837,7 @@ const selectItem = (category, item) => {
                                     Pakai
                                 </button>
                                 <button 
-                                    @click="deletePreset(preset.id)" 
+                                    @click="deletePresetFromCloud(preset.id)" 
                                     class="bg-red-900/20 hover:bg-red-600 text-red-400 hover:text-white border border-red-500/30 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer"
                                 >
                                     ✕
